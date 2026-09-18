@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/media/tracepad-mark-dark.svg">
-    <img src="public/brand/tracepad-mark.svg" width="64" height="64" alt="Tracepad logo">
-  </picture>
+  <img src="public/brand/tracepad-mark.svg" width="64" height="64" alt="Tracepad logo">
 </p>
 
 <h1 align="center">Tracepad</h1>
@@ -29,15 +26,13 @@
 </p>
 
 <a href="#see-it-in-action">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/media/workspace-dark.webp">
-    <img src="docs/media/workspace-light.webp" alt="Tracepad workspace with Python code, interview context, and console results. Available in light and dark themes." width="1440">
-  </picture>
+  <img src="docs/media/workspace-light.webp" alt="Tracepad workspace with Python code, interview context, and console results. Available in light and dark themes." width="1440">
 </a>
 
 <p align="center">
   Your problem, code, and evidence in one workspace.<br>
-  <a href="#see-it-in-action"><strong>Explore all 14 feature demos below</strong></a>
+  <a href="#see-it-in-action"><strong>Explore all 14 feature demos below</strong></a> ·
+  <a href="docs/media/workspace-dark.webp">View the dark workspace</a>
 </p>
 
 Tracepad brings the whole practice session together: write Python, trace an idea, test edge cases, respond to a changing brief, and review what happened. Projects stay on your computer. Core practice works offline after installation.
