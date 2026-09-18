@@ -3,6 +3,21 @@ import type { SessionState } from "../src/types";
 import type { LearningState } from "../src/learning/types";
 import type { ProjectDocument } from "../src/projects/types";
 import { testEnvironment } from "../server/test-environment";
+import { EXECUTION_TIMEOUT_MS, INITIALIZATION_TIMEOUT_MS } from "../src/runner";
+
+// A run may use both watchdog budgets before it reports a final result. Keep
+// UI assertions aligned with that contract, plus time to render the result.
+export const PYTHON_OPERATION_TIMEOUT_MS =
+  INITIALIZATION_TIMEOUT_MS + EXECUTION_TIMEOUT_MS + 5_000;
+
+export async function expectPythonStatus(
+  page: Page,
+  status: "Completed" | "Failed" | "Stopped" | "Timed out",
+) {
+  await expect(page.locator(".output-status")).toContainText(status, {
+    timeout: PYTHON_OPERATION_TIMEOUT_MS,
+  });
+}
 
 /** Each browser test gets a real SQLite project, including legacy migration inputs. */
 export async function isolateProjects(page: Page) {

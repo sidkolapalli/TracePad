@@ -1,11 +1,16 @@
-import { readProjectState } from "./fixtures";
-import { test, expect } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  readProjectState,
+} from "./fixtures";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 
 test("light theme persists, keeps the editor model intact, and covers desktop and narrow dialogs", async ({
   page,
 }) => {
-  test.setTimeout(90000);
+  test.setTimeout(PYTHON_OPERATION_TIMEOUT_MS + 60_000);
   const initial = defaultSession();
   initial.activeId = "sandbox";
   initial.drafts.sandbox = {
@@ -57,10 +62,8 @@ test("light theme persists, keeps the editor model intact, and covers desktop an
     'print("theme preserved")',
   );
   await page.locator(".run-button").click();
-  await expect(page.locator(".console-output")).toHaveText(
-    "theme preserved\n",
-    { timeout: 30000 },
-  );
+  await expectPythonStatus(page, "Completed");
+  await expect(page.locator(".console-output")).toHaveText("theme preserved\n");
   await expect
     .poll(async () => readProjectState(page).then((s) => s.session.theme))
     .toBe("light");

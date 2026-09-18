@@ -1,4 +1,4 @@
-import { test, expect, readProjectState } from "./fixtures";
+import { test, expect, readProjectState, expectPythonStatus } from "./fixtures";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 import {
   createAttempt,
@@ -53,6 +53,7 @@ test("console preserves raw streams and saved evidence when copied or cleared", 
     page.getByRole("button", { name: "Clear output", exact: true }),
   ).toBeDisabled();
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".test-summary")).toContainText("1 passed");
   await expect
     .poll(
@@ -106,6 +107,7 @@ test("console preserves raw streams and saved evidence when copied or cleared", 
     evidence,
   );
   await page.getByRole("button", { name: "Run", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(output).toContainText("trace: start");
   await expect(page.locator(".output-status")).toContainText("Completed");
   await page.getByRole("button", { name: "Switch to light mode" }).click();

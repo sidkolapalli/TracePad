@@ -1,4 +1,10 @@
-import { test, expect, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  type Page,
+} from "./fixtures";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import {
   StdioClientTransport,
@@ -141,7 +147,7 @@ test("real MCP delivers a validated question, requested hint, and evidence-based
       .click();
     await expect(
       page.getByRole("button", { name: "Start practice", exact: true }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: PYTHON_OPERATION_TIMEOUT_MS });
     expect((await bridge.snapshot()).activeAttempt).toBeNull();
     await page
       .getByRole("button", { name: "Start practice", exact: true })
@@ -199,6 +205,7 @@ test("real MCP delivers a validated question, requested hint, and evidence-based
     await page
       .getByRole("button", { name: "Finish & review", exact: true })
       .click();
+    await expectPythonStatus(page, "Completed");
     await expect(
       page.getByText("3 of 3 supplied baseline tests passed.", { exact: true }),
     ).toBeVisible();
@@ -265,6 +272,11 @@ test("live mock requirements are opt-in, delivered exactly once, acknowledged an
     await page
       .getByRole("button", { name: "Start 60-minute mock", exact: true })
       .click();
+    // Question preparation runs its own Python worker before creating an
+    // attempt. Only begin polling the MCP sync after the workspace is ready.
+    await expect(page.getByRole("dialog")).not.toBeVisible({
+      timeout: PYTHON_OPERATION_TIMEOUT_MS,
+    });
     await expect
       .poll(async () => (await bridge.snapshot()).activeAttempt?.mode)
       .toBe("mock");
@@ -435,6 +447,7 @@ test("rejects a generated question with a broken reference and never serves the 
       .click();
     await expect(page.locator(".preparation-error")).toContainText(
       /reference|validation|baseline/i,
+      { timeout: PYTHON_OPERATION_TIMEOUT_MS },
     );
     expect((await bridge.snapshot()).activeAttempt).toBeNull();
     await expect(

@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, expectPythonStatus } from "./fixtures";
 
 test("project search survives a delayed opening notification and resets on reopen", async ({
   page,
@@ -84,9 +84,7 @@ test("focused workspace keeps navigation contextual across themes and sizes", as
   await expect(
     page.getByRole("button", { name: "Collapse output", exact: true }),
   ).toBeVisible();
-  await expect(page.locator(".output-status")).toContainText("Completed", {
-    timeout: 30000,
-  });
+  await expectPythonStatus(page, "Completed");
   await page.getByRole("button", { name: "Switch to light mode" }).click();
   await page.screenshot({
     animations: "disabled",

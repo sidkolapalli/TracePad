@@ -1,5 +1,5 @@
 import { readProjectState } from "./fixtures";
-import { test, expect, type Page } from "./fixtures";
+import { test, expect, expectPythonStatus, type Page } from "./fixtures";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 import {
   createAttempt,
@@ -62,6 +62,7 @@ test("project files import, keep separate undo history, rename, delete, and surv
   await page.keyboard.press("ControlOrMeta+z");
   await expect(page.locator(".view-lines")).toHaveText("answer = 41");
   await page.locator(".run-button").click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText("42\n", {
     timeout: 30000,
   });
@@ -76,6 +77,7 @@ test("project files import, keep separate undo history, rename, delete, and surv
   await files.getByRole("tab", { name: "main.py", exact: true }).click();
   await edit(page, "from models.counter import answer\nprint(answer + 1)");
   await page.locator(".run-button").click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText("42\n", {
     timeout: 30000,
   });

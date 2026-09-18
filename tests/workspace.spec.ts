@@ -1,5 +1,11 @@
-import { readProjectState } from "./fixtures";
-import { test, expect, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  readProjectState,
+  type Page,
+} from "./fixtures";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 import { sandboxExercise } from "../src/exercises";
 import type { SessionState } from "../src/types";
@@ -50,7 +56,7 @@ async function chooseQuestion(page: Page, title: string) {
 test("custom question lifecycle, assertion results, independent drafts, and refresh recovery", async ({
   page,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(2 * PYTHON_OPERATION_TIMEOUT_MS + 60_000);
   await page.goto("/");
   await page.getByRole("button", { name: "New question" }).click();
   const dialog = page.getByRole("dialog");
@@ -88,10 +94,10 @@ test("custom question lifecycle, assertion results, independent drafts, and refr
   ).toBeUndefined();
 
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".test-summary")).toContainText(
     "2 passed · 0 failed",
   );
-  await expect(page.locator(".output-status")).toContainText("Completed");
   await page
     .locator(".test-case-heading")
     .filter({ hasText: "Positive value" })
@@ -104,6 +110,7 @@ test("custom question lifecycle, assertion results, independent drafts, and refr
   ).toContainText("Ready");
   await expect(page.locator(".test-summary")).not.toContainText("passed");
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Failed");
   await expect(page.locator(".test-summary")).toContainText(
     "1 passed · 1 failed",
   );
@@ -195,6 +202,7 @@ test("custom question lifecycle, assertion results, independent drafts, and refr
 test("keyboard execution, multiline input, panel resizing, font preference, and reset confirmation", async ({
   page,
 }) => {
+  test.setTimeout(PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   await page.goto("/");
   await chooseQuestion(page, "Blank sandbox");
   const questionResize = page.getByRole("separator", {
@@ -224,8 +232,8 @@ test("keyboard execution, multiline input, panel resizing, font preference, and 
   const source = 'name = input()\nage = input()\nprint(name + ":" + age)\n';
   await editSource(page, source);
   await page.keyboard.press("ControlOrMeta+Enter");
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText("Ada:42\n");
-  await expect(page.locator(".output-status")).toContainText("Completed");
   await expect
     .poll(async () => (await readSaved(page))?.drafts.sandbox?.source)
     .toBe(source);
@@ -307,6 +315,7 @@ test("timer presets, pause/resume, refresh, shared session, and overtime use wal
 test("failed browser recovery cache keeps database saves and editor usable", async ({
   page,
 }) => {
+  test.setTimeout(PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {
       throw new DOMException("Storage is full", "QuotaExceededError");
@@ -321,6 +330,7 @@ test("failed browser recovery cache keeps database saves and editor usable", asy
     "still in memory",
   );
   await page.keyboard.press("ControlOrMeta+Enter");
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText("still in memory\n");
   expect(
     await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY),

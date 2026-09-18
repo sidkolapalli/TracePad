@@ -1,4 +1,11 @@
-import { test, expect, readProjectState, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  readProjectState,
+  type Page,
+} from "./fixtures";
 
 const MINUTE = 60_000;
 const TEST_CLOCK_KEY = "localpad.test-interview-now";
@@ -103,7 +110,9 @@ async function startMock(page: Page) {
   await page
     .getByRole("button", { name: "Start 60-minute mock", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).not.toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("dialog")).not.toBeVisible({
+    timeout: PYTHON_OPERATION_TIMEOUT_MS,
+  });
   await page.getByRole("tab", { name: "Interview", exact: true }).click();
   await expect
     .poll(async () => (await readProjectState(page)).learning.attempts.length)
@@ -202,6 +211,7 @@ test("one complete mock preserves reasoning, module execution, follow-up work an
     "from domain import Item, ShortLoanItem, Loan, Library\n\ndesk = Library()\ndesk.add(Item('camera', 'Camera'))\nprint(desk.available_ids())",
   );
   await page.locator(".run-button").click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText("['camera']\n", {
     timeout: 30_000,
   });
@@ -248,6 +258,7 @@ test("one complete mock preserves reasoning, module execution, follow-up work an
       "desk = Library()\nfor key in ('z', 'a', 'm'):\n    desk.add(Item(key, key))\nz = desk.borrow('z', 'Sam', 0)\na = desk.borrow('a', 'Sam', 0)\ndesk.borrow('m', 'Other', 0)\nassert desk.loans_for('Sam') == [a, z]\nassert desk.loans_for('sam') == []\nview = desk.loans_for('Sam')\nview.clear()\nassert desk.loans_for('Sam') == [a, z]\ndesk.return_item('a')\nassert desk.loans_for('Sam') == [z]",
     );
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".test-summary")).toContainText(
     "1 passed · 0 failed",
     { timeout: 30_000 },
@@ -266,6 +277,7 @@ test("one complete mock preserves reasoning, module execution, follow-up work an
   await page
     .getByRole("button", { name: "Submit interview", exact: true })
     .click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".attempt-review")).toBeVisible({
     timeout: 30_000,
   });
@@ -458,6 +470,7 @@ test("inactive time and refresh reveal exactly one scheduled follow-up, preserve
   await page.getByRole("tab", { name: "Code", exact: true }).click();
   await editCode(page, "print('Still coding in overtime')");
   await page.locator(".run-button").click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".console-output")).toHaveText(
     "Still coding in overtime\n",
     { timeout: 30_000 },

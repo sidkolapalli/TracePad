@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { testEnvironment } from "./server/test-environment";
+import { EXECUTION_TIMEOUT_MS, INITIALIZATION_TIMEOUT_MS } from "./src/runner";
 
 if (process.env.LOCALPAD_PRODUCTION_URL)
   throw new Error(
@@ -18,7 +19,9 @@ export default defineConfig({
     settings.mode === "production"
       ? ["**/runtime.spec.ts", "**/modules-runtime.spec.ts"]
       : ["**/production.spec.ts"],
-  timeout: 60_000,
+  // Permit one complete cold-start/run cycle plus UI interactions. The runner
+  // still enforces its own separate startup and execution watchdogs.
+  timeout: INITIALIZATION_TIMEOUT_MS + EXECUTION_TIMEOUT_MS + 30_000,
   expect: { timeout: 15_000 },
   workers: 1,
   use: {

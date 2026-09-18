@@ -1,9 +1,16 @@
-import { test, expect, isolateProjects } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  isolateProjects,
+} from "./fixtures";
 
 test("production cold-loads Monaco and executes Python without internet access", async ({
   browser,
   baseURL,
 }) => {
+  test.setTimeout(2 * PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   const target = baseURL!;
   const origin = new URL(target!).origin;
   const context = await browser.newContext({
@@ -53,11 +60,10 @@ test("production cold-loads Monaco and executes Python without internet access",
       .getByRole("button", { name: "Save question", exact: true })
       .click();
     await page.locator(".run-button").click();
+    await expectPythonStatus(page, "Completed");
     await expect(page.locator(".console-output")).toHaveText(
       "offline-ready: 120\n",
-      { timeout: 30_000 },
     );
-    await expect(page.locator(".output-status")).toContainText("Completed");
     await page.getByRole("tab", { name: "Scratchpad", exact: true }).click();
     await page.getByRole("tab", { name: "Notes", exact: true }).click();
     await page
@@ -72,7 +78,9 @@ test("production cold-loads Monaco and executes Python without internet access",
     await page
       .getByRole("button", { name: "Start 15-minute practice", exact: true })
       .click();
-    await expect(page.getByRole("dialog")).not.toBeVisible({ timeout: 30000 });
+    await expect(page.getByRole("dialog")).not.toBeVisible({
+      timeout: PYTHON_OPERATION_TIMEOUT_MS,
+    });
     await expect(page.locator(".learning-mode")).toContainText(
       "Local variation",
     );

@@ -1,5 +1,11 @@
-import { readProjectState } from "./fixtures";
-import { test, expect, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  PYTHON_OPERATION_TIMEOUT_MS,
+  readProjectState,
+  type Page,
+} from "./fixtures";
 import {
   defaultSession,
   STORAGE_KEY,
@@ -56,7 +62,7 @@ async function seed(page: Page, mode: PracticeMode = "drill") {
 test("topic attempt preserves evidence, notes and hints; fixed baseline is separate from scratch tests", async ({
   page,
 }) => {
-  test.setTimeout(120000);
+  test.setTimeout(3 * PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   const attempt = await seed(page);
   await page.screenshot({ path: "artifacts/learning-workspace-desktop.png" });
   await page
@@ -66,6 +72,7 @@ test("topic attempt preserves evidence, notes and hints; fixed baseline is separ
   await page.getByRole("button", { name: "Pause timer", exact: true }).click();
   await page.getByRole("button", { name: "Resume timer", exact: true }).click();
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".test-summary")).toContainText("1 passed");
   await expect
     .poll(async () => (await saved(page)).attempts[0].runs.length)
@@ -74,9 +81,7 @@ test("topic attempt preserves evidence, notes and hints; fixed baseline is separ
   await page
     .getByRole("button", { name: "Check baseline", exact: true })
     .click();
-  await expect(page.locator(".output-status")).toContainText("Completed", {
-    timeout: 30000,
-  });
+  await expectPythonStatus(page, "Completed");
   await expect
     .poll(async () => (await saved(page)).attempts[0].runs.length)
     .toBe(2);
@@ -93,7 +98,8 @@ test("topic attempt preserves evidence, notes and hints; fixed baseline is separ
   await page
     .getByRole("button", { name: "Finish & review", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).toBeVisible({ timeout: 30000 });
+  await expectPythonStatus(page, "Completed");
+  await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.locator(".review-facts")).toContainText(
     `${attempt.question.baselineTests.length}/${attempt.question.baselineTests.length}`,
   );
@@ -131,6 +137,7 @@ test("topic attempt preserves evidence, notes and hints; fixed baseline is separ
 test("mock starts blank, keeps a strict hour and saves an unfinished solution honestly", async ({
   page,
 }) => {
+  test.setTimeout(PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   const a = await seed(page, "mock");
   await expect(
     page.getByRole("button", { name: "Configure timer" }),
@@ -154,7 +161,8 @@ test("mock starts blank, keeps a strict hour and saves an unfinished solution ho
   await page
     .getByRole("button", { name: "Submit interview", exact: true })
     .click();
-  await expect(page.locator(".attempt-review")).toBeVisible({ timeout: 30000 });
+  await expectPythonStatus(page, "Failed");
+  await expect(page.locator(".attempt-review")).toBeVisible();
   await expect(page.locator(".review-facts")).toContainText(
     `0/${a.question.baselineTests.length}`,
   );
@@ -187,6 +195,7 @@ test("narrow practice navigation is keyboard accessible without horizontal overf
 test("local question preparation starts a mock and cannot inherit an open timer menu", async ({
   page,
 }) => {
+  test.setTimeout(PYTHON_OPERATION_TIMEOUT_MS + 30_000);
   await page.goto("/");
   await page.getByRole("button", { name: "Configure timer" }).click();
   await page.getByRole("button", { name: "Practice", exact: true }).click();
@@ -196,7 +205,9 @@ test("local question preparation starts a mock and cannot inherit an open timer 
   await page
     .getByRole("button", { name: "Start 60-minute mock", exact: true })
     .click();
-  await expect(page.getByRole("dialog")).not.toBeVisible({ timeout: 30000 });
+  await expect(page.getByRole("dialog")).not.toBeVisible({
+    timeout: PYTHON_OPERATION_TIMEOUT_MS,
+  });
   await expect(page.locator(".learning-mode")).toContainText(
     "60-minute mock interview",
   );

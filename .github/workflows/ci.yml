@@ -40,7 +40,8 @@ jobs:
       - name: Unit tests
         run: npm test
       - name: Install pinned Chromium and platform dependencies
-        run: npx playwright install --with-deps chromium
+        # Tests use Playwright's default headless shell; the headed browser is unused.
+        run: npx playwright install --with-deps --only-shell chromium
       - name: Browser integration tests
         run: npm run test:e2e
       - name: Build and test production offline

@@ -1,4 +1,10 @@
-import { test, expect, readProjectState, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  readProjectState,
+  expectPythonStatus,
+  type Page,
+} from "./fixtures";
 import { readFile } from "node:fs/promises";
 
 async function pad(page: Page) {
@@ -117,7 +123,10 @@ test("scratchpad uses mobile navigation and preserves execution results while ed
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
-  await expect(page.locator(".test-summary")).toContainText("failed");
+  // Cases report individually. Preserve the final suite result, not a partial
+  // count that may still change while the scratchpad is being edited.
+  await expectPythonStatus(page, "Failed");
+  await expect(page.locator(".test-summary")).toContainText("4 failed");
   const result = await page.locator(".test-summary").innerText();
   await pad(page);
   await page
