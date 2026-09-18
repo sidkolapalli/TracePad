@@ -1,0 +1,58 @@
+{
+  "name": "tracepad",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "A local coding workspace for learning fundamentals, practicing interviews, and working through problems—with AI guidance when you choose.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "overrides": {
+    "dompurify": "3.4.15"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "mcp": "tsx server/mcp.ts",
+    "prebuild": "npm run notices:check",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:production": "npm run build && node scripts/test-e2e.mjs --production",
+    "check:repo": "node scripts/check-repository.mjs",
+    "notices": "node scripts/generate-notices.mjs",
+    "notices:check": "node scripts/generate-notices.mjs --check",
+    "format": "prettier --write src tests scripts *.ts *.json *.html *.md",
+    "postinstall": "node scripts/copy-runtime.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "lucide-react": "1.47.0",
+    "monaco-editor": "0.56.0",
+    "pyodide": "314.0.7",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "4.23.13",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.6.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "prettier": "3.9.8",
+    "typescript": "7.0.2",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidkolapalli/TracePad.git"
+  },
+  "homepage": "https://github.com/sidkolapalli/TracePad#readme",
+  "bugs": {
+    "url": "https://github.com/sidkolapalli/TracePad/issues"
+  }
+}

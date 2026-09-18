@@ -1,0 +1,190 @@
+/* Keep the decision and its prerequisites visible while setup scrolls. */
+.practice-setup-dialog .learning-hub-heading {
+  flex-shrink: 0;
+  padding: 20px 28px;
+}
+
+.practice-setup-dialog .learning-hub-heading p {
+  margin-top: 5px;
+}
+
+.practice-setup-dialog .learning-hub-content {
+  padding: 20px 28px;
+}
+
+.practice-setup-dialog .practice-mode-choice {
+  margin-bottom: 18px;
+}
+
+.practice-setup-dialog .practice-mode-choice legend {
+  margin-bottom: 10px;
+}
+
+.practice-setup-dialog .practice-mode-choice > label {
+  padding: 11px 14px;
+}
+
+.practice-setup-dialog .practice-mode-choice .selected small {
+  color: var(--studio-ink);
+}
+
+.practice-setup-dialog .practice-settings {
+  gap: 12px 18px;
+  margin-bottom: 12px;
+}
+
+.practice-setup-dialog .practice-settings label {
+  gap: 6px;
+}
+
+.practice-setup-dialog .learning-setup > .learning-help {
+  margin: 0;
+}
+
+.practice-setup-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--studio-border);
+  background: var(--studio-canvas);
+  padding: 16px 28px;
+}
+
+.practice-setup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.practice-setup-actions > div {
+  min-width: 0;
+}
+
+.practice-setup-actions > div > button {
+  min-height: 42px;
+  max-width: 100%;
+  justify-content: center;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.practice-setup-actions > div > button > svg {
+  flex-shrink: 0;
+}
+
+.practice-setup-actions p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--studio-muted);
+  overflow-wrap: anywhere;
+}
+
+.practice-setup-actions .practice-connection-link {
+  display: inline;
+  padding: 0;
+  color: var(--studio-accent);
+  font-size: inherit;
+  line-height: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.practice-setup-footer .preparation-status,
+.practice-setup-footer .preparation-error {
+  margin: 0 0 12px;
+}
+
+.practice-setup-footer .preparation-error {
+  max-height: 112px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+
+.practice-setup-footer.is-preparing .practice-setup-actions p {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .practice-setup-dialog .learning-hub-heading {
+    padding: 16px 18px;
+  }
+
+  .practice-setup-dialog .learning-hub-content {
+    padding: 16px 18px;
+  }
+
+  .practice-setup-footer {
+    padding: 12px 18px;
+  }
+
+  .practice-setup-actions {
+    gap: 16px;
+  }
+
+  .practice-setup-actions > div > button {
+    min-height: 44px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .practice-setup-dialog .learning-hub-heading {
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+  }
+
+  .practice-setup-dialog .practice-heading-identity {
+    gap: 10px;
+  }
+
+  .practice-setup-dialog .tracepad-mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .practice-setup-dialog .learning-hub-heading h2 {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .practice-setup-dialog .learning-hub-heading p,
+  .practice-setup-dialog .learning-tabs > button > svg {
+    display: none;
+  }
+
+  .practice-setup-dialog .learning-tabs > button {
+    white-space: nowrap;
+  }
+
+  .practice-setup-actions {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .practice-setup-actions p {
+    margin-top: 5px;
+  }
+
+  .practice-setup-footer .preparation-status {
+    gap: 8px;
+    padding: 10px;
+  }
+}
+
+@media (max-height: 600px) {
+  .practice-setup-dialog .learning-hub-heading {
+    padding-block: 12px;
+  }
+
+  .practice-setup-dialog .learning-hub-heading p {
+    display: none;
+  }
+
+  .practice-setup-footer {
+    padding-block: 10px;
+  }
+
+  .practice-setup-footer .preparation-error {
+    max-height: 80px;
+  }
+}

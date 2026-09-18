@@ -1,0 +1,402 @@
+.scratchpad {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--studio-panel);
+  color: var(--studio-ink);
+}
+.scratchpad .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.question-pane {
+  container-type: inline-size;
+}
+@container (max-width: 420px) {
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs > button[role="tab"] > svg {
+    display: none;
+  }
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs > button {
+    padding-inline: 6px;
+    font-size: 11px;
+  }
+  .scratchpad-navigation [role="tab"] {
+    padding-inline: 6px;
+  }
+  .scratchpad-navigation [role="tab"] > svg {
+    display: none;
+  }
+}
+.scratchpad-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 19px;
+}
+.scratchpad-heading h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scratchpad-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--studio-border);
+  padding: 0 12px;
+}
+.scratchpad-navigation [role="tablist"] {
+  display: flex;
+  min-width: 0;
+  gap: 2px;
+}
+.scratchpad-navigation [role="tab"] {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 12px 9px;
+  font-size: 12px;
+  color: var(--studio-muted);
+  border-bottom: 2px solid transparent;
+}
+.scratchpad-navigation [role="tab"][aria-selected="true"] {
+  color: var(--studio-ink);
+  border-bottom-color: var(--studio-accent);
+}
+.scratchpad-navigation [role="tab"]:hover {
+  color: var(--studio-ink);
+  background: var(--studio-inset);
+}
+.scratchpad-history {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1px;
+}
+.scratchpad-history .icon-button {
+  width: 27px;
+  height: 29px;
+}
+.scratchpad-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.scratchpad-content > section {
+  height: 100%;
+  min-height: 0;
+}
+.scratch-notes {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 22px 12px;
+  gap: 12px;
+}
+.scratch-notes textarea {
+  flex: 1;
+  resize: none;
+  width: 100%;
+  min-height: 140px;
+  border: 0;
+  background: transparent;
+  color: var(--studio-ink);
+  font-size: 15px;
+  line-height: 1.9;
+  padding: 8px 0;
+}
+.scratch-notes textarea::placeholder {
+  color: var(--studio-muted);
+}
+.scratch-notes textarea:focus-visible {
+  outline-offset: 5px;
+}
+.scratchpad-footnote {
+  font-size: 11px;
+  color: var(--studio-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+.scratchpad-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--studio-border);
+  font-size: 11px;
+  color: var(--studio-muted);
+  flex-shrink: 0;
+}
+.scratchpad-footer > div {
+  display: flex;
+  gap: 12px;
+}
+.scratchpad-footer button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--studio-muted);
+}
+.scratchpad-footer button:hover {
+  color: var(--studio-ink);
+}
+.trace-editor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 18px 16px 12px;
+  gap: 13px;
+}
+.trace-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.trace-actions button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 9px;
+  font-size: 12px;
+  min-height: 31px;
+}
+.trace-actions > span {
+  font-size: 11px;
+  color: var(--studio-muted);
+  margin-left: auto;
+}
+.scratchpad-help {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--studio-muted);
+  margin: 0;
+  max-width: 65ch;
+}
+.trace-scroll {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  border: 1px solid var(--studio-border);
+  background: var(--studio-canvas);
+  border-radius: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--studio-muted) transparent;
+}
+.trace-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 12px;
+}
+.trace-table caption {
+  text-align: left;
+}
+.trace-table th,
+.trace-table td {
+  border-right: 1px solid var(--studio-border);
+  border-bottom: 1px solid var(--studio-border);
+  padding: 0;
+  vertical-align: top;
+}
+.trace-table th:last-child,
+.trace-table td:last-child {
+  border-right: 0;
+}
+.trace-table thead th {
+  background: var(--studio-panel);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.trace-table thead th > div {
+  display: flex;
+  align-items: center;
+  min-width: 134px;
+  gap: 3px;
+  padding: 5px;
+}
+.trace-table thead input {
+  background: transparent;
+  border: 0;
+  color: var(--studio-ink);
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 70px;
+  width: 100%;
+  padding: 8px 4px;
+}
+.trace-table th .icon-button {
+  flex-shrink: 0;
+  width: 24px;
+  height: 27px;
+}
+.trace-table .trace-index {
+  width: 30px;
+  min-width: 30px;
+  padding: 14px 5px;
+  text-align: center;
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.trace-table textarea {
+  display: block;
+  background: transparent;
+  color: var(--studio-ink);
+  border: 0;
+  border-radius: 0;
+  width: 100%;
+  min-width: 134px;
+  min-height: 64px;
+  font-family: var(--code);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 11px;
+  resize: vertical;
+}
+.trace-table textarea:focus-visible,
+.trace-table input:focus-visible {
+  outline-offset: -2px;
+}
+.trace-table tr:focus-within td {
+  background: var(--studio-selection);
+}
+.trace-row-actions {
+  position: sticky;
+  right: 0;
+  background: var(--studio-canvas);
+  border-left: 1px solid var(--studio-border);
+  width: 32px;
+  min-width: 32px;
+  padding: 3px !important;
+}
+.trace-table thead .trace-row-actions {
+  z-index: 2;
+}
+.trace-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.trace-overflow-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--studio-muted);
+  font-size: 11px;
+}
+.trace-overflow-controls .icon-button {
+  width: 25px;
+  height: 26px;
+}
+.trace-row-actions .icon-button {
+  display: flex;
+  width: 26px;
+  height: 28px;
+}
+.trace-empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--studio-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.trace-empty button {
+  margin-top: 10px;
+}
+#sidebar-panel-scratchpad {
+  height: 100%;
+  overflow: hidden;
+}
+.workspace.scratchpad-focus .question-pane {
+  width: 100% !important;
+}
+.workspace.scratchpad-focus > .coding-pane,
+.workspace.scratchpad-focus > .vertical-resizer {
+  display: none;
+}
+.workspace.scratchpad-focus .scratchpad-content {
+  max-width: none;
+}
+.workspace.scratchpad-focus .scratch-notes textarea {
+  max-width: 80ch;
+}
+.workspace.scratchpad-focus .sidebar-collapse {
+  visibility: hidden;
+}
+@media (min-width: 701px) {
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs {
+    gap: 0;
+    padding-inline: 8px;
+  }
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs > button {
+    padding-inline: 9px;
+    gap: 6px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs > button[role="tab"] > svg {
+    display: none;
+  }
+  .workspace:not(.sidebar-collapsed) .sidebar-tabs > button {
+    padding-inline: 6px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 700px) {
+  .mobile-navigation > button {
+    font-size: 11px;
+    padding-inline: 3px;
+    gap: 0;
+  }
+  .mobile-navigation > button > svg {
+    display: none;
+  }
+  .scratchpad-heading {
+    padding: 17px 18px;
+  }
+  .scratchpad-expand {
+    display: none;
+  }
+  .scratchpad-navigation {
+    padding-inline: 9px;
+    gap: 2px;
+  }
+  .scratchpad-navigation [role="tab"] {
+    padding-inline: 6px;
+    font-size: 12px;
+  }
+  .scratchpad-navigation [role="tab"] svg {
+    display: none;
+  }
+  .scratchpad-footer {
+    padding-inline: 14px;
+  }
+  .scratchpad-footer > div {
+    gap: 10px;
+  }
+  .trace-editor {
+    padding-inline: 12px;
+  }
+}

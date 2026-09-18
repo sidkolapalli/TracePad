@@ -1,0 +1,57 @@
+name: Alpha checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alpha-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Node 24 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install from lockfile and prepare local runtime
+        run: npm ci
+      - name: Check public repository contents
+        run: npm run check:repo
+      - name: Check dependency notices
+        run: npm run notices:check
+      - name: Unit tests
+        run: npm test
+      - name: Install pinned Chromium and platform dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Browser integration tests
+        run: npm run test:e2e
+      - name: Build and test production offline
+        run: npm run test:e2e:production
+      - name: Upload synthetic browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: browser-failures-${{ matrix.os }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

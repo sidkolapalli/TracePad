@@ -1,0 +1,147 @@
+/* Mobile controls occupy their full hit area; desktop keeps the compact IDE. */
+@media (max-width: 700px) {
+  .app-header {
+    height: 102px;
+    min-height: 102px;
+    grid-template-rows: 44px 46px;
+  }
+
+  .workspace-project-title,
+  .practice-launch,
+  .timer-display {
+    min-height: 44px;
+  }
+
+  .theme-toggle,
+  .timer .icon-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
+  .timer {
+    height: 46px;
+    min-height: 46px;
+    padding: 0 2px;
+  }
+
+  .timer-popover {
+    top: calc(100% + 6px);
+  }
+
+  .mobile-navigation {
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .editor-toolbar {
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .run-actions .run-button,
+  .run-actions .test-button,
+  .run-actions .stop-button,
+  .editor-options-panel .icon-button,
+  .editor-options-panel .font-control select {
+    min-height: 44px;
+  }
+
+  .editor-options > summary {
+    width: 44px;
+    height: 44px;
+  }
+
+  .editor-options-panel {
+    top: calc(100% + 4px);
+  }
+
+  .output-toolbar {
+    height: 45px;
+    min-height: 45px;
+    gap: 4px;
+    padding-inline: 8px 4px;
+  }
+
+  .output-tabs {
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .output-tabs > button {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .output-status {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  .output-status > span:not(.status-dot):not(.elapsed) {
+    min-width: 0;
+  }
+
+  .output-status .icon-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .output-status .icon-button,
+  .output-status .status-dot,
+  .output-status > svg {
+    flex-shrink: 0;
+  }
+
+  .output-collapsed .output-pane {
+    height: 45px;
+    min-height: 45px;
+  }
+
+  .console-session-bar {
+    min-height: 45px;
+    padding-block: 0;
+  }
+
+  .console-actions button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .workspace-files .files-toolbar {
+    flex-basis: 48px;
+  }
+
+  .workspace-root-toggle {
+    flex-basis: 44px;
+  }
+
+  .workspace-files .file-tree-item {
+    min-height: 44px;
+  }
+
+  .workspace-files .file-name {
+    line-height: 44px;
+  }
+
+  .workspace-files .icon-button,
+  .workspace-files .file-row-actions .icon-button,
+  .scratchpad-history .icon-button {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .workspace-files .file-inline-input input {
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .scratchpad-navigation [role="tab"] {
+    min-height: 44px;
+  }
+}

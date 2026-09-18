@@ -1,0 +1,24 @@
+node_modules/
+dist/
+public/python/
+test-results/
+playwright-report/
+artifacts/
+.localpad/
+*.tsbuildinfo
+.vite/
+
+# Personal assistant/editor state: never part of the community source release.
+.claude/
+.codex/
+.agents/
+.impeccable/
+.vscode/
+
+# Local configuration, credentials, and OS/diagnostic files.
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14171d" />
+    <script>
+      // Apply the saved theme before loading the editor to avoid a dark flash.
+      try {
+        const projectId = localStorage.getItem("localpad.active-project.v1");
+        const clientId = sessionStorage.getItem("localpad.recovery-client.v1");
+        const cached = JSON.parse(
+          localStorage.getItem(
+            `localpad.project.v1.${projectId}.${clientId}`,
+          ) || "null",
+        );
+        const saved =
+          cached?.state?.session ??
+          JSON.parse(localStorage.getItem("localpad.session.v1") || "null");
+        if (saved?.version === 1 && saved.theme === "light") {
+          document.documentElement.dataset.theme = "light";
+          document.querySelector('meta[name="theme-color"]').content =
+            "#f5f7f9";
+        }
+      } catch {
+        /* The app reports unreadable or unavailable storage. */
+      }
+    </script>
+    <meta
+      name="description"
+      content="A local coding workspace for learning fundamentals, practicing interviews, and working through problems—with AI guidance when you choose."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=tracepad" />
+    <title>Tracepad — Understand it. Build it. Explain it.</title>
+  </head>
+  <body>
+    <!-- Direction: Focused workbench. THESIS: quiet, task-first interview practice.
+    OWN-WORLD: familiar IDE geometry, Segoe UI controls, cool neutral light/dark surfaces.
+    STORY: choose a project, read the brief, write Python, inspect results.
+    FIRST VIEWPORT: one project switcher, contextual Brief/Files/Interview sidebar, editor and output.
+    FORM: code-led Operate; seed 9e9a12bf; user-pinned CoderPad split workspace takes precedence.
+    No reference comp: external reference service unavailable. -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
