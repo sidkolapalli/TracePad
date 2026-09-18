@@ -60,7 +60,21 @@ test("practice keeps its start action and assistant prerequisite visible on a la
   const content = await page.locator(".learning-hub-content").boundingBox();
   const footer = await page.locator(".practice-setup-footer").boundingBox();
   expect(topic!.y).toBeGreaterThanOrEqual(content!.y);
-  expect(topic!.y + topic!.height).toBeLessThanOrEqual(footer!.y);
+  // Native controls can have fractional bounds, while focus scrolling rounds
+  // its offset to whole CSS pixels (macOS leaves a 0.375px remainder here).
+  // Reject any full pixel of clipping and check the lower edge is hit-testable.
+  expect(topic!.y + topic!.height - footer!.y).toBeLessThan(1);
+  expect(
+    await topicSelect.evaluate((select) => {
+      const bounds = select.getBoundingClientRect();
+      return select.contains(
+        document.elementFromPoint(
+          bounds.x + bounds.width / 2,
+          bounds.bottom - 1,
+        ),
+      );
+    }),
+  ).toBe(true);
   await topicSelect.selectOption({ label: "Composition" });
   await expect(topicSelect.locator("option:checked")).toHaveText("Composition");
   await expectInsideViewport(page, "Start 15-minute practice");
