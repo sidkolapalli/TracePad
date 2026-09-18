@@ -59,7 +59,7 @@ The production offline test uses a fresh browser context and blocks non-local re
 
 ## Runtime limits
 
-There is no server-side Python execution, shell, package installer, or direct access to your installed Python environment. The runtime supports browser-compatible Python standard-library modules. This is a personal practice environment, not a security boundary for executing hostile third-party code. Each run has a new interpreter. Each test restores submitted project files and resets project imports, globals, and input; standard-library state is shared within a suite. Runtime initialization has a 30-second limit; execution has a 10-second limit per run or entire test suite. Combined output is capped at 100 KiB. Browser memory limits still apply.
+There is no server-side Python execution, shell, package installer, or direct access to your installed Python environment. The runtime supports browser-compatible Python standard-library modules. This is a personal practice environment, not a security boundary for executing hostile third-party code. Each run has a new interpreter. Each test restores submitted project files and resets project imports, globals, and input; standard-library state is shared within a suite. Runtime initialization has a 60-second limit; execution has a 10-second limit per run or entire test suite. Combined output is capped at 100 KiB. Browser memory limits still apply.
 
 See the [workspace guide](WORKSPACE_GUIDE.md#saving-and-privacy) for saved-history bounds, project backups, and recovery behavior.
 

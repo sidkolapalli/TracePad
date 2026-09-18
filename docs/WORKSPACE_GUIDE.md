@@ -62,7 +62,7 @@ A per-tab browser recovery cache keeps unsaved edits through refresh where brows
 
 Switching projects stops execution and question validation, saves the current workspace, and disconnects its MCP instance. An active interview remains unfinished, and its absolute timer deadline continues while another project is open.
 
-There is no server-side Python execution, shell, package installer, or direct access to your installed Python environment. The runtime supports browser-compatible Python standard-library modules. This is a personal practice environment, not a security boundary for executing hostile third-party code. Each run has a new interpreter. Each test restores submitted project files and resets project imports, globals, and input; standard-library state is shared within a suite. Runtime initialization has a 30-second limit; execution has a 10-second limit per run or entire test suite. Combined output is capped at 100 KiB. Browser memory limits still apply.
+There is no server-side Python execution, shell, package installer, or direct access to your installed Python environment. The runtime supports browser-compatible Python standard-library modules. This is a personal practice environment, not a security boundary for executing hostile third-party code. Each run has a new interpreter. Each test restores submitted project files and resets project imports, globals, and input; standard-library state is shared within a suite. Runtime initialization has a 60-second limit; execution has a 10-second limit per run or entire test suite. Combined output is capped at 100 KiB. Browser memory limits still apply.
 
 ## Connect an AI assistant
 

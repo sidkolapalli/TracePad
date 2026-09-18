@@ -161,6 +161,22 @@ describe("PythonRunner worker lifecycle", () => {
     });
   });
 
+  it("allows a slow cold start without extending the execution limit", () => {
+    runner.run(request("cold-start"), (event) => events.push(event));
+    const worker = FakeWorker.instances[0];
+    vi.advanceTimersByTime(45_000);
+    expect(events.at(-1)).toMatchObject({ status: "loading" });
+    expect(worker.terminate).not.toHaveBeenCalled();
+
+    worker.emit({ type: "status", runId: "cold-start", status: "running" });
+    vi.advanceTimersByTime(EXECUTION_TIMEOUT_MS);
+    expect(events.at(-1)).toMatchObject({
+      status: "timed-out",
+      elapsedMs: EXECUTION_TIMEOUT_MS,
+    });
+    expect(worker.terminate).toHaveBeenCalledOnce();
+  });
+
   it("terminates output floods and worker failures without leaving a watchdog", () => {
     runner.run(request("flood"), (event) => events.push(event));
     FakeWorker.instances[0].emit({

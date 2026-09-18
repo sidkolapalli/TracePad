@@ -1,7 +1,9 @@
 import type { RunRequest, RunnerEvent } from "./types";
 
 export const EXECUTION_TIMEOUT_MS = 10_000;
-export const INITIALIZATION_TIMEOUT_MS = 30_000;
+// Loading and compiling the local Wasm interpreter can be slower on a cold,
+// resource-constrained machine. This budget never extends Python execution.
+export const INITIALIZATION_TIMEOUT_MS = 60_000;
 
 type CompletionStatus = Extract<RunnerEvent, { type: "complete" }>["status"];
 
@@ -30,7 +32,7 @@ export class PythonRunner {
       this.timeout = setTimeout(() => {
         this.finish(
           "failed",
-          "Python could not start within 30 seconds. Check the local runtime files and try again.",
+          `Python could not start within ${INITIALIZATION_TIMEOUT_MS / 1000} seconds. Check the local runtime files and try again.`,
         );
       }, INITIALIZATION_TIMEOUT_MS);
 
