@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="#start"><strong>Get started</strong></a> ·
-  <a href="docs/DEMO.md#feature-videos">Feature videos</a> ·
+  <a href="#see-it-in-action">Feature demos</a> ·
   <a href="docs/WORKSPACE_GUIDE.md">User guide</a> ·
   <a href="docs/MCP.md">MCP integration</a> ·
   <a href="CONTRIBUTING.md">Contribute</a>
@@ -28,16 +28,16 @@
   <a href="LICENSE">MIT licensed</a>
 </p>
 
-<a href="docs/DEMO.md#feature-videos">
+<a href="#see-it-in-action">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/media/workspace-dark.webp">
-    <img src="docs/media/workspace-light.webp" alt="Tracepad workspace with Python code, interview context, and console results. Available in light and dark themes." width="1440" height="900">
+    <img src="docs/media/workspace-light.webp" alt="Tracepad workspace with Python code, interview context, and console results. Available in light and dark themes." width="1440">
   </picture>
 </a>
 
 <p align="center">
   Your problem, code, and evidence in one workspace.<br>
-  <a href="docs/DEMO.md#feature-videos"><strong>Watch a feature in 6–35 seconds</strong></a>
+  <a href="#see-it-in-action"><strong>Explore all 14 feature demos below</strong></a>
 </p>
 
 Tracepad brings the whole practice session together: write Python, trace an idea, test edge cases, respond to a changing brief, and review what happened. Projects stay on your computer. Core practice works offline after installation.
@@ -79,15 +79,125 @@ A strict mock starts with a blank editor and a 60-minute clock that keeps runnin
 
 ## See it in action
 
-Each clip focuses on one feature. Click a preview to watch.
+All 14 features have a short looping preview below. Select any preview to open its full video with playback controls; caption files are linked alongside each clip.
 
-| Timed interview practice                                                                                                                                                                                                          | Optional MCP coaching                                                                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Watch a timed mock interview](docs/media/features/timed-mock.webp)](docs/media/features/timed-mock.mp4)<br>**[Start a timed mock · 34s](docs/media/features/timed-mock.mp4)**<br>Clarify the contract and explain an approach. | [![Watch an assistant add a follow-up requirement](docs/media/features/live-followup.webp)](docs/media/features/live-followup.mp4)<br>**[Handle a live follow-up · 33s](docs/media/features/live-followup.mp4)**<br>Receive a requirement, adapt, and test. |
+[Workspace](#separate-interview-projects) · [Visual reasoning](#trace-tables) · [Interview practice](#start-a-timed-mock) · [Optional AI coaching](#live-mcp-follow-up) · [Themes & saving](#light-mode--saved-work)
 
-**[Browse all 14 feature videos](docs/DEMO.md#feature-videos)** — including modules, trace tables, flowcharts, debugging, AI questions, contextual hints, and saved reviews. Captions are included.
+Recorded with synthetic projects, prepared code, and edited waits. Python execution and MCP exchanges are real; the assistant is external to Tracepad. Complexity notes and trace tables are written by the learner.
 
-Recorded with synthetic projects, prepared code, and edited waits. Python execution and MCP exchanges are real; the assistant is external to Tracepad.
+### Separate interview projects
+
+Keep preparation for different interviews in separate projects, each with its own code, questions, and practice history.
+
+[![Animated preview: switching between saved interview projects](docs/media/features/projects.gif)](docs/media/features/projects.mp4)
+
+[Watch the full clip · 11s](docs/media/features/projects.mp4) · [Captions](docs/media/features/projects.vtt)
+
+### Python modules, runs & tests
+
+Organize a solution into importable Python files. Run the program and inspect named tests for normal inputs and edge cases.
+
+[![Animated preview: Python modules and six passing test cases](docs/media/features/python-modules.gif)](docs/media/features/python-modules.mp4)
+
+[Watch the full clip · 22s](docs/media/features/python-modules.mp4) · [Captions](docs/media/features/python-modules.vtt)
+
+### Trace tables
+
+Track variable state one step at a time, beside the code. Make the behavior concrete before changing the implementation.
+
+[![Animated preview: a manual trace table beside Python code](docs/media/features/trace-tables.gif)](docs/media/features/trace-tables.mp4)
+
+[Watch the full clip · 7s](docs/media/features/trace-tables.mp4) · [Captions](docs/media/features/trace-tables.vtt)
+
+### Flowcharts
+
+Sketch the approach in an editable diagram. Expand the canvas when a problem needs more room to think.
+
+[![Animated preview: editing and expanding a flowchart](docs/media/features/flowcharts.gif)](docs/media/features/flowcharts.mp4)
+
+[Watch the full clip · 6s](docs/media/features/flowcharts.mp4) · [Captions](docs/media/features/flowcharts.vtt)
+
+### Reasoning & complexity notes
+
+Keep assumptions, tradeoffs, and your own time and space complexity analysis with the solution. These notes become part of the evidence you can review or share with a coach.
+
+[![Animated preview: approach notes and learner-written complexity analysis](docs/media/features/reasoning-notes.gif)](docs/media/features/reasoning-notes.mp4)
+
+[Watch the full clip · 10s](docs/media/features/reasoning-notes.mp4) · [Captions](docs/media/features/reasoning-notes.vtt)
+
+### Input & the standard library
+
+Supply multiline input before running. Use Python's standard library and read the results in the console.
+
+[![Animated preview: multiline input and a Python statistics calculation](docs/media/features/input-stdlib.gif)](docs/media/features/input-stdlib.mp4)
+
+[Watch the full clip · 13s](docs/media/features/input-stdlib.mp4) · [Captions](docs/media/features/input-stdlib.vtt)
+
+### Tracebacks & debugging
+
+Inspect a real exception, correct the boundary condition, and rerun. Failed attempts stay useful while you work toward a passing solution.
+
+[![Animated preview: inspecting a traceback and fixing the failing code](docs/media/features/debugging.gif)](docs/media/features/debugging.mp4)
+
+[Watch the full clip · 14s](docs/media/features/debugging.mp4) · [Captions](docs/media/features/debugging.vtt)
+
+### Stop & recover
+
+Terminate an infinite loop immediately, then run again in a fresh Python worker without losing your code.
+
+[![Animated preview: stopping an infinite loop and running again](docs/media/features/stop-recover.gif)](docs/media/features/stop-recover.mp4)
+
+[Watch the full clip · 9s](docs/media/features/stop-recover.mp4) · [Captions](docs/media/features/stop-recover.vtt)
+
+### Start a timed mock
+
+A strict 60-minute mock starts with a blank editor and no pause or reset. Clarify the contract, explain an approach, then move into implementation with the clock running.
+
+[![Animated preview: starting a strict timed interview with a blank editor](docs/media/features/timed-mock.gif)](docs/media/features/timed-mock.mp4)
+
+[Watch the full clip · 34s](docs/media/features/timed-mock.mp4) · [Captions](docs/media/features/timed-mock.vtt)
+
+### Live MCP follow-up
+
+Opt in to live requirements from an external assistant. See the attributed update in the Interview panel, acknowledge it, and test the change.
+
+[![Animated preview: an assistant requirement arriving in the interview workspace](docs/media/features/live-followup.gif)](docs/media/features/live-followup.mp4)
+
+[Watch the full clip · 33s](docs/media/features/live-followup.mp4) · [Captions](docs/media/features/live-followup.vtt)
+
+### Debrief & assistant review
+
+Submit the code, reasoning, and test evidence together. Review where time went and, with a connected assistant, receive feedback grounded in the submitted work.
+
+[![Animated preview: a saved interview debrief and assistant review](docs/media/features/debrief-review.gif)](docs/media/features/debrief-review.mp4)
+
+[Watch the full clip · 32s](docs/media/features/debrief-review.mp4) · [Captions](docs/media/features/debrief-review.vtt)
+
+### A tailored MCP question
+
+Ask your connected assistant for an exercise on a topic such as OOP. The question arrives with examples and named tests; validate its reference solution before starting.
+
+[![Animated preview: a tailored OOP exercise arriving from an MCP coach](docs/media/features/ai-question.gif)](docs/media/features/ai-question.mp4)
+
+[Watch the full clip · 23s](docs/media/features/ai-question.mp4) · [Captions](docs/media/features/ai-question.vtt)
+
+### A contextual MCP hint
+
+Request help on the attempt in front of you. A connected coach can inspect the code and failing checks, send a targeted hint, and let you work through the fix.
+
+[![Animated preview: a contextual hint arriving beside a failing attempt](docs/media/features/contextual-hint.gif)](docs/media/features/contextual-hint.mp4)
+
+[Watch the full clip · 35s](docs/media/features/contextual-hint.mp4) · [Captions](docs/media/features/contextual-hint.vtt)
+
+### Light mode & saved work
+
+Choose a complete light or dark theme. Refresh and resume the saved project with your work and preferences intact.
+
+[![Animated preview: switching themes and resuming saved work](docs/media/features/themes-saving.gif)](docs/media/features/themes-saving.mp4)
+
+[Watch the full clip · 14s](docs/media/features/themes-saving.mp4) · [Captions](docs/media/features/themes-saving.vtt)
+
+[Compact video index & recording details](docs/DEMO.md) · [Continuous 4:49 walkthrough](docs/media/tracepad-demo.mp4) · [Back to quick start](#start)
 
 ## Connect an AI assistant
 

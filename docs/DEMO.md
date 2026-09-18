@@ -1,6 +1,6 @@
 # Tracepad feature demos
 
-Choose a feature and watch a short clip. Each thumbnail opens an MP4; every clip has its own caption track. Durations are rounded to the nearest second.
+Choose a feature and watch a short clip. Each thumbnail opens an MP4; every clip has its own caption track. Durations are rounded to the nearest second. For a scrolling tour with looping GIF previews, see [all 14 demos in the README](../README.md#see-it-in-action).
 
 These demos use synthetic projects and real Python execution. Prepared code is pasted and long waits are edited out; the timed mock demonstrates the hour-long format using a short recorded attempt. Assistant exchanges use Tracepad's actual MCP server: an external coach reads the work and responds to explicit requests or opted-in live updates. There is no autonomous AI interviewer in the app.
 
@@ -51,5 +51,13 @@ node scripts/demo/split-features.mjs
 ```
 
 The split uses the titles and cut points in `scripts/demo/features.json` and writes an MP4, WebP thumbnail, and adjusted WebVTT captions for each feature under `docs/media/features/`.
+
+To recreate the README's looping previews from those MP4s, run:
+
+```sh
+node scripts/demo/animate-previews.mjs
+```
+
+The GIFs show short excerpts at normal speed, with a brief hold where needed to keep a transition into the next feature out of the loop. They preserve the source's 16:10 aspect ratio. The full MP4s remain available for readable text, playback controls, and the complete action; GitHub does not autoplay those videos. Static WebP thumbnails remain in this compact index.
 
 Raw footage, local MCP configuration, databases, and Recordly's downloaded application are not included in the repository. The finished feature clips, thumbnails, captions, and optional full tour are the documentation assets.
