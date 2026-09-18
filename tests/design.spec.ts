@@ -1,5 +1,33 @@
 import { test, expect } from "./fixtures";
 
+test("project search survives a delayed opening notification and resets on reopen", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: /Switch project:/ });
+  await trigger.click();
+  const search = page.getByLabel("Search projects");
+  await expect(search).toBeFocused();
+  await search.fill("missing interview");
+  // Native popover toggle events are queued. Reproduce the opening notification
+  // arriving after the input event instead of relying on the host's task timing.
+  await page
+    .getByRole("dialog", { name: "Switch project" })
+    .evaluate((panel) => {
+      panel.dispatchEvent(
+        new ToggleEvent("toggle", { oldState: "closed", newState: "open" }),
+      );
+    });
+  await expect(search).toHaveValue("missing interview");
+  await expect(page.getByText("No projects match your search.")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await expect(search).toBeFocused();
+  await expect(search).toHaveValue("");
+  await expect(page.locator(".project-link")).toHaveCount(1);
+});
+
 test("focused workspace keeps navigation contextual across themes and sizes", async ({
   page,
 }) => {

@@ -44,6 +44,9 @@ export function ProjectPicker({
   const [query, setQuery] = useState("");
   useEffect(() => {
     if (open) {
+      // Reset before the field becomes usable. Native toggle notifications are
+      // queued and may arrive after the user has already entered a search.
+      setQuery("");
       panel.current?.showPopover();
       search.current?.focus();
     } else panel.current?.hidePopover();
@@ -83,7 +86,6 @@ export function ProjectPicker({
               .querySelector<HTMLButtonElement>(".workspace-project-title")
               ?.focus();
         }
-        if (shown) setQuery("");
       }}
     >
       <header className="project-picker-heading">
