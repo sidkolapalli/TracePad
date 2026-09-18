@@ -33,6 +33,9 @@ def _make_practice_executor():
     change_directory, make_directories = _os.chdir, _os.makedirs
     remove_directory, remove_file = _shutil.rmtree, _os.unlink
     path_exists, is_link = _os.path.exists, _os.path.islink
+    # Python's cache invalidation lazily imports its own metadata helpers. Load
+    # them before the snapshot so case resets do not repeatedly import them.
+    _importlib.invalidate_caches()
     baseline_modules = dict(_sys.modules)
     baseline_path = list(_sys.path)
     baseline_meta_path, baseline_path_hooks = list(_sys.meta_path), list(_sys.path_hooks)
