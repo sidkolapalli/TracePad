@@ -1,0 +1,169 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.500
+Tracepad. Understand it. Build it. Explain it.
+
+2
+00:00:03.900 --> 00:00:09.475
+A local Python workspace, built for deliberate practice.
+
+3
+00:00:09.475 --> 00:00:15.351
+Keep each interview in its own saved project.
+
+4
+00:00:15.351 --> 00:00:23.205
+Organize your solution into real, importable Python modules.
+
+5
+00:00:23.205 --> 00:00:30.083
+Run Python locally. Inspect the output beside your code.
+
+6
+00:00:30.083 --> 00:00:37.693
+Six named tests. Normal inputs and edge cases, all passing.
+
+7
+00:00:37.693 --> 00:00:44.758
+Trace the state by hand, one step at a time.
+
+8
+00:00:44.758 --> 00:00:50.825
+Sketch the approach before reaching for code.
+
+9
+00:00:50.825 --> 00:01:00.458
+Keep assumptions, tradeoffs, and complexity notes with your work.
+
+10
+00:01:00.458 --> 00:01:06.321
+Supply multiline input before the program runs.
+
+11
+00:01:06.321 --> 00:01:13.213
+The Python standard library is available locally.
+
+12
+00:01:13.213 --> 00:01:20.421
+A real exception, with its traceback ready to inspect.
+
+13
+00:01:20.421 --> 00:01:27.529
+Correct the boundary and run again
+
+14
+00:01:27.529 --> 00:01:36.914
+Stop an infinite loop without losing the workspace
+
+15
+00:01:36.914 --> 00:01:42.313
+Choose a focused topic drill or a complete mock interview.
+
+16
+00:01:42.313 --> 00:01:51.199
+A strict sixty-minute mock starts with a blank editor.
+
+17
+00:01:51.199 --> 00:01:56.450
+No pause or reset. This edited demo uses the real clock.
+
+18
+00:01:56.450 --> 00:02:01.509
+Clarify the contract before you implement it.
+
+19
+00:02:01.509 --> 00:02:11.111
+Write the object model and explain the approach.
+
+20
+00:02:11.111 --> 00:02:20.036
+Prepared code is pasted here to keep the walkthrough short.
+
+21
+00:02:20.036 --> 00:02:26.672
+The app executes that code and captures real output.
+
+22
+00:02:26.672 --> 00:02:33.428
+Opt in: an external assistant can add live requirements via MCP.
+
+23
+00:02:33.428 --> 00:02:42.093
+The coach reads the current work, then sends a new requirement.
+
+24
+00:02:42.093 --> 00:02:53.028
+Acknowledge the change and extend the implementation.
+
+25
+00:02:53.028 --> 00:02:59.594
+A custom test checks the new borrower view.
+
+26
+00:02:59.594 --> 00:03:06.168
+Submit the code, reasoning, and test evidence together.
+
+27
+00:03:06.168 --> 00:03:10.724
+The original baseline is fixed. All six checks pass.
+
+28
+00:03:10.724 --> 00:03:16.781
+Review the time actually spent in each interview stage.
+
+29
+00:03:16.781 --> 00:03:22.850
+Tracepad sends the submitted code and run evidence to the MCP coach.
+
+30
+00:03:22.850 --> 00:03:31.441
+The external coach returns a review grounded in those results.
+
+31
+00:03:31.441 --> 00:03:37.315
+Ask your connected assistant for a focused OOP question.
+
+32
+00:03:37.315 --> 00:03:44.718
+An original question arrives with examples and named checks.
+
+33
+00:03:44.718 --> 00:03:54.433
+Validate the supplied reference solution before starting.
+
+34
+00:03:54.433 --> 00:03:59.990
+A failing check exposes shared mutable state
+
+35
+00:03:59.990 --> 00:04:05.869
+Request a hint. The coach can inspect the current code and failures.
+
+36
+00:04:05.869 --> 00:04:15.980
+A contextual hint arrives directly in the Interview panel.
+
+37
+00:04:15.980 --> 00:04:22.876
+Independent instance state and defensive copies: five checks pass.
+
+38
+00:04:22.876 --> 00:04:29.482
+Save the practice record with the help that was used
+
+39
+00:04:29.482 --> 00:04:34.766
+A complete light theme, including the review.
+
+40
+00:04:34.766 --> 00:04:40.002
+Choose your theme. Your projects and preferences stay local.
+
+41
+00:04:40.002 --> 00:04:43.557
+Refresh and resume the saved project
+
+42
+00:04:43.600 --> 00:04:48.600
+Local by default. Optional MCP coaching. github.com/sidkolapalli/TracePad

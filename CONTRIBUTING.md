@@ -15,7 +15,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/`. Installation needs internet access to download packages; the postinstall script copies the pinned Pyodide runtime locally. Keep the server running while practicing. See the [README](README.md) for offline use, saving, and backup behavior.
+Open `http://127.0.0.1:5173/`. Installation needs internet access to download packages; the postinstall script copies the pinned Pyodide runtime locally. Keep the server running while practicing. See the [installation notes](docs/DEVELOPMENT.md#installation-notes) for platform and offline-use details, and the [workspace guide](docs/WORKSPACE_GUIDE.md#saving-and-privacy) for saving and backup behavior.
 
 Use synthetic practice data when developing. Never include `.localpad/`, exported personal projects, bridge tokens, employer questions, local assistant settings, or screenshots containing private code in a contribution. The application database and test databases are local artifacts, not source fixtures.
 
@@ -50,7 +50,7 @@ Keep existing exercise IDs stable so saved drafts remain associated with the sam
 
 ## Validate a change
 
-Use the commands in [README: Build and verify](README.md#build-and-verify). The full release check includes unit/schema tests, real browser Python tests, a production build, and an offline production rehearsal. Tests must use their managed, isolated servers and databases; do not point them at a personal practice server.
+Use the commands in the [development guide: Build and verify](docs/DEVELOPMENT.md#build-and-verify). The full release check includes unit/schema tests, real browser Python tests, a production build, and an offline production rehearsal. Tests must use their managed, isolated servers and databases; do not point them at a personal practice server.
 
 For an exercise-only change, the relevant minimum is:
 

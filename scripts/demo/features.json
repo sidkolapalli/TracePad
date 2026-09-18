@@ -1,0 +1,114 @@
+[
+  {
+    "id": "projects",
+    "title": "Separate interview projects",
+    "description": "Switch between saved preparation projects.",
+    "startMs": 3900,
+    "endMs": 15351,
+    "posterMs": 12000
+  },
+  {
+    "id": "python-modules",
+    "title": "Python modules, runs & tests",
+    "description": "Import a module, run Python, and check six named cases.",
+    "startMs": 15351,
+    "endMs": 37693,
+    "posterMs": 32500
+  },
+  {
+    "id": "trace-tables",
+    "title": "Trace tables",
+    "description": "Record variable state step by step beside your code.",
+    "startMs": 37693,
+    "endMs": 44758,
+    "posterMs": 41700
+  },
+  {
+    "id": "flowcharts",
+    "title": "Flowcharts",
+    "description": "Make the approach visible in an editable diagram.",
+    "startMs": 44758,
+    "endMs": 50825,
+    "posterMs": 47900
+  },
+  {
+    "id": "reasoning-notes",
+    "title": "Reasoning & complexity notes",
+    "description": "Keep assumptions and your own complexity analysis with the solution.",
+    "startMs": 50825,
+    "endMs": 60458,
+    "posterMs": 52500
+  },
+  {
+    "id": "input-stdlib",
+    "title": "Input & the standard library",
+    "description": "Supply multiline input and inspect a real statistics calculation.",
+    "startMs": 60458,
+    "endMs": 73213,
+    "posterMs": 69500
+  },
+  {
+    "id": "debugging",
+    "title": "Tracebacks & debugging",
+    "description": "Inspect an exception, correct the boundary, and rerun.",
+    "startMs": 73213,
+    "endMs": 87529,
+    "posterMs": 76800
+  },
+  {
+    "id": "stop-recover",
+    "title": "Stop & recover",
+    "description": "Terminate an infinite loop, then run again in a fresh worker.",
+    "startMs": 87529,
+    "endMs": 96914,
+    "posterMs": 89000
+  },
+  {
+    "id": "timed-mock",
+    "title": "Start a timed mock",
+    "description": "Choose a strict mock, clarify the contract, and explain an approach.",
+    "startMs": 96914,
+    "endMs": 131111,
+    "posterMs": 119000
+  },
+  {
+    "id": "live-followup",
+    "title": "Live MCP follow-up",
+    "description": "Receive a requirement from an external assistant, acknowledge it, and test the change.",
+    "startMs": 146672,
+    "endMs": 179594,
+    "posterMs": 158000
+  },
+  {
+    "id": "debrief-review",
+    "title": "Debrief & assistant review",
+    "description": "Submit evidence, inspect phase timings, and receive an MCP review.",
+    "startMs": 179594,
+    "endMs": 211441,
+    "posterMs": 207000
+  },
+  {
+    "id": "ai-question",
+    "title": "A tailored MCP question",
+    "description": "Request an OOP exercise and validate its supplied reference solution.",
+    "startMs": 211441,
+    "endMs": 234433,
+    "posterMs": 221500
+  },
+  {
+    "id": "contextual-hint",
+    "title": "A contextual MCP hint",
+    "description": "Share a failing attempt, receive a targeted hint, and verify the fix.",
+    "startMs": 234433,
+    "endMs": 269482,
+    "posterMs": 250000
+  },
+  {
+    "id": "themes-saving",
+    "title": "Light mode & saved work",
+    "description": "Switch themes, refresh, and resume the saved project.",
+    "startMs": 269482,
+    "endMs": 283557,
+    "posterMs": 277000
+  }
+]

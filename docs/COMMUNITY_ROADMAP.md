@@ -15,7 +15,7 @@ Project: [sidkolapalli/TracePad](https://github.com/sidkolapalli/TracePad). **Un
 - A debrief with selected phase durations, hint and requirement history, test evidence, submitted source/modules, and visual reasoning. Later working edits do not rewrite a submission. There is no keystroke playback, audio assessment, or automated readiness score.
 - Optional MCP coaching through an external assistant: question validation, requested hints, attributed feedback, read-only structured snapshots, and opt-in live requirements. There is no autonomous interviewer inside the app.
 
-See the [README](../README.md) for operating instructions and current limits. The [alpha checklist](ALPHA_CHECKLIST.md) distinguishes implemented tooling from release checks that still require evidence.
+See the [workspace guide](WORKSPACE_GUIDE.md) for operating instructions and current limits, and the [development guide](DEVELOPMENT.md) for setup and verification. The [alpha checklist](ALPHA_CHECKLIST.md) distinguishes implemented tooling from release checks that still require evidence.
 
 ## Before a public alpha announcement
 

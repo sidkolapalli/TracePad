@@ -4,6 +4,8 @@ Tracepad includes a standard MCP server with **stdio transport**. A compatible a
 
 The implementation uses the [official TypeScript MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk/tree/v1.x) and its [stdio transport](https://github.com/modelcontextprotocol/typescript-sdk/blob/v1.x/docs/server.md#stdio).
 
+For the in-app coaching workflow, see the [workspace guide](WORKSPACE_GUIDE.md#connect-an-ai-assistant). Platform setup and offline-use details are in the [installation notes](DEVELOPMENT.md#installation-notes).
+
 ## Start and connect
 
 1. Follow the [Tracepad checkout instructions](../README.md#start), then run `npm ci` and `npm run dev` from the project directory. Open `http://127.0.0.1:5173/` in a browser.

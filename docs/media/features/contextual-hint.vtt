@@ -1,0 +1,21 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:05.557
+A failing check exposes shared mutable state
+
+2
+00:00:05.557 --> 00:00:11.436
+Request a hint. The coach can inspect the current code and failures.
+
+3
+00:00:11.436 --> 00:00:21.547
+A contextual hint arrives directly in the Interview panel.
+
+4
+00:00:21.547 --> 00:00:28.443
+Independent instance state and defensive copies: five checks pass.
+
+5
+00:00:28.443 --> 00:00:35.049
+Save the practice record with the help that was used

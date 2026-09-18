@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "demo-ai-practice-queue",
+  "topicId": "python.oop.instance-state",
+  "level": "foundation",
+  "title": "A practice queue with independent state",
+  "prompt": "Build a PracticeQueue class for a small interview workshop. Each queue must own its waiting list. add(name) appends a string to the queue and returns None. next() removes and returns the oldest name, or None if empty. waiting() returns a new list of the waiting names in order. Changing that returned list must not change the queue. Duplicate names are allowed. First explain where the mutable state belongs and trace two independent queues before implementing the methods.",
+  "starterCode": "class PracticeQueue:\n    def __init__(self):\n        pass\n\n    def add(self, name):\n        pass\n\n    def next(self):\n        pass\n\n    def waiting(self):\n        pass\n",
+  "examples": [
+    {
+      "input": "q = PracticeQueue(); q.add('Maya'); q.add('Leo'); q.next()",
+      "output": "'Maya'",
+      "explanation": "The oldest arrival leaves first; waiting() now returns ['Leo']."
+    },
+    {
+      "input": "a = PracticeQueue(); b = PracticeQueue(); a.add('Maya'); b.waiting()",
+      "output": "[]",
+      "explanation": "Each instance has its own mutable state."
+    }
+  ],
+  "constraints": [
+    "Names are strings; duplicates are valid.",
+    "An empty queue returns None from next().",
+    "waiting() returns a fresh list every time.",
+    "Use only the Python standard library. At most 100 waiting names."
+  ],
+  "baselineTests": [
+    {
+      "id": "empty",
+      "name": "Empty queue",
+      "code": "q = PracticeQueue()\nassert q.waiting() == []\nassert q.next() is None"
+    },
+    {
+      "id": "fifo",
+      "name": "Arrival order",
+      "code": "q = PracticeQueue()\nassert q.add('Maya') is None\nq.add('Leo')\nassert q.next() == 'Maya'\nassert q.waiting() == ['Leo']\nassert q.next() == 'Leo'\nassert q.next() is None"
+    },
+    {
+      "id": "independent",
+      "name": "Independent instances",
+      "code": "a, b = PracticeQueue(), PracticeQueue()\na.add('Maya')\nassert b.waiting() == []\nb.add('Leo')\nassert a.waiting() == ['Maya']\nassert b.waiting() == ['Leo']"
+    },
+    {
+      "id": "copy",
+      "name": "Returned list is independent",
+      "code": "q = PracticeQueue()\nq.add('Maya')\nview = q.waiting()\nview.clear()\nassert q.waiting() == ['Maya']\nassert q.waiting() is not q.waiting()"
+    },
+    {
+      "id": "duplicates",
+      "name": "Duplicate names",
+      "code": "q = PracticeQueue()\nq.add('Maya')\nq.add('Maya')\nassert q.next() == 'Maya'\nassert q.waiting() == ['Maya']"
+    }
+  ],
+  "hints": [
+    "A mutable attribute declared on the class is shared. Create the waiting container inside __init__ for each instance.",
+    "Use list(self._waiting) to return a snapshot. A collections.deque supports removing from the front without shifting every remaining name."
+  ],
+  "referenceSolution": "from collections import deque\n\n\nclass PracticeQueue:\n    def __init__(self):\n        self._waiting = deque()\n\n    def add(self, name):\n        self._waiting.append(name)\n\n    def next(self):\n        return self._waiting.popleft() if self._waiting else None\n\n    def waiting(self):\n        return list(self._waiting)\n",
+  "learningObjectives": [
+    "Create independent mutable state in __init__.",
+    "Define a small, testable object interface.",
+    "Return defensive snapshots and reason about edge cases."
+  ],
+  "recommendedMinutes": 15,
+  "provenance": { "kind": "ai", "generator": "Codex · external MCP demo coach" }
+}

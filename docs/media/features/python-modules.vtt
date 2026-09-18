@@ -1,0 +1,13 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:07.854
+Organize your solution into real, importable Python modules.
+
+2
+00:00:07.854 --> 00:00:14.732
+Run Python locally. Inspect the output beside your code.
+
+3
+00:00:14.732 --> 00:00:22.342
+Six named tests. Normal inputs and edge cases, all passing.

@@ -1,0 +1,17 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:06.756
+Opt in: an external assistant can add live requirements via MCP.
+
+2
+00:00:06.756 --> 00:00:15.421
+The coach reads the current work, then sends a new requirement.
+
+3
+00:00:15.421 --> 00:00:26.356
+Acknowledge the change and extend the implementation.
+
+4
+00:00:26.356 --> 00:00:32.900
+A custom test checks the new borrower view.
