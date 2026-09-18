@@ -384,6 +384,47 @@ describe("boundSnapshot", () => {
     validAndBounded(bounded);
   });
 
+  it.each([
+    ["ASCII and escaped punctuation", 'quote"\\\n'],
+    ["control characters", "\u0000\u0001\t"],
+    ["multibyte Unicode", "界🧑‍💻"],
+    ["unpaired surrogates", "\uD800x\uDC00"],
+  ])(
+    "preserves exactly-at-budget %s and truncates a one-byte overflow",
+    (_, unit) => {
+      const original = makeSnapshot();
+      original.activeAttempt!.question.baselineTests = Array.from(
+        { length: 30 },
+        (_, index) => ({
+          id: `baseline-${index}`,
+          name: `Case ${index}`,
+          code: unit.repeat(2_000),
+        }),
+      );
+      // Optional undefined properties are omitted by JSON, including between
+      // populated properties. The byte counter must match that behavior too.
+      original.files = undefined;
+      original.activeAttempt!.runs[0].message = undefined;
+      let padding = 850_000 - bytes(original);
+      for (const test of original.activeAttempt!.question.baselineTests) {
+        const added = Math.min(padding, 100_000 - test.code.length);
+        test.code += "x".repeat(added);
+        padding -= added;
+      }
+      expect(padding).toBe(0);
+      expect(bytes(original)).toBe(850_000);
+      const exact = boundSnapshot(original);
+      expect(exact).toEqual(original);
+      validAndBounded(exact);
+
+      original.source += "x";
+      expect(bytes(original)).toBe(850_001);
+      const bounded = boundSnapshot(original);
+      expect(bounded.truncatedFields).toContain("activeAttempt.runs");
+      validAndBounded(bounded);
+    },
+  );
+
   it("bounds oversized nested feedback, hints, pause history and existing truncation metadata", () => {
     const original = makeSnapshot();
     const attempt = original.activeAttempt!;
@@ -416,6 +457,19 @@ describe("boundSnapshot", () => {
     expect(bounded.activeAttempt!.feedback.length).toBeLessThanOrEqual(5);
     expect(bounded.activeAttempt!.hintsUsed.length).toBeLessThanOrEqual(20);
     expect(bounded.activeAttempt!.pauseEvents.length).toBeLessThanOrEqual(100);
+    expect(bounded.activeAttempt!.feedback.map((entry) => entry.id)).toEqual([
+      "feedback-50",
+      "feedback-51",
+      "feedback-52",
+      "feedback-53",
+      "feedback-54",
+    ]);
+    expect(bounded.activeAttempt!.hintsUsed.at(-1)!.at).toBe(104);
+    expect(bounded.activeAttempt!.pauseEvents.at(-1)!.at).toBe(1_004);
+    expect(attempt.feedback).toHaveLength(55);
+    expect(attempt.feedback[0].summary).toBe(text);
+    expect(attempt.hintsUsed).toHaveLength(105);
+    expect(attempt.pauseEvents).toHaveLength(1_005);
     expect(
       bounded.truncatedFields!.some((path) =>
         path.includes("additional fields"),

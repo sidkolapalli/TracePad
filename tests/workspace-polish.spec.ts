@@ -49,11 +49,22 @@ test("practice keeps its start action and assistant prerequisite visible on a la
   await page.getByRole("button", { name: "Practice", exact: true }).click();
   await expectInsideViewport(page, "Start 15-minute practice");
   await expectInsideViewport(page, "Connection settings");
-  const topic = await page
-    .locator(".practice-topic-field select")
-    .boundingBox();
+  // Native fonts and controls can push Topic below the initial scroll position
+  // on macOS. Test keyboard access through the scrolling form, not a fixed
+  // amount of content fitting above the footer on every operating system.
+  const topicSelect = page.locator(".practice-topic-field select");
+  await page.getByRole("radio", { name: /^Topic practice/ }).focus();
+  await page.keyboard.press("Tab");
+  await expect(topicSelect).toBeFocused();
+  const topic = await topicSelect.boundingBox();
+  const content = await page.locator(".learning-hub-content").boundingBox();
   const footer = await page.locator(".practice-setup-footer").boundingBox();
+  expect(topic!.y).toBeGreaterThanOrEqual(content!.y);
   expect(topic!.y + topic!.height).toBeLessThanOrEqual(footer!.y);
+  await topicSelect.selectOption({ label: "Composition" });
+  await expect(topicSelect.locator("option:checked")).toHaveText("Composition");
+  await expectInsideViewport(page, "Start 15-minute practice");
+  await expectInsideViewport(page, "Connection settings");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

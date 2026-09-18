@@ -16,6 +16,50 @@ const MAX_SNAPSHOT_BYTES = 850_000;
 const encoder = new TextEncoder();
 type SnapshotAttempt = NonNullable<PracticeSnapshot["activeAttempt"]>;
 
+/** Measure plain JSON data only until it exceeds the transport budget. */
+function exceedsJsonBudget(value: unknown, budget: number): boolean {
+  let remaining = budget;
+  function string(value: string) {
+    // Every UTF-16 code unit consumes at least one JSON/UTF-8 byte. Avoid
+    // allocating an encoded copy when even that lower bound is too large.
+    if (value.length + 2 > remaining) {
+      remaining = -1;
+      return;
+    }
+    remaining -= encoder.encode(JSON.stringify(value)).byteLength;
+  }
+  function visit(value: unknown) {
+    if (remaining < 0) return;
+    if (typeof value === "string") {
+      string(value);
+    } else if (value === null || typeof value !== "object") {
+      // Undefined array slots serialize as null; undefined object properties
+      // are skipped below. Snapshot data contains no custom JSON serializers.
+      remaining -= JSON.stringify(value ?? null).length;
+    } else if (Array.isArray(value)) {
+      remaining -= 2; // brackets
+      for (let index = 0; index < value.length && remaining >= 0; index++) {
+        if (index) remaining--;
+        visit(value[index]);
+      }
+    } else {
+      remaining -= 2; // braces
+      let first = true;
+      for (const [key, entry] of Object.entries(value)) {
+        if (remaining < 0) break;
+        if (entry === undefined) continue;
+        if (!first) remaining--;
+        first = false;
+        string(key);
+        remaining--; // colon
+        visit(entry);
+      }
+    }
+  }
+  visit(value);
+  return remaining < 0;
+}
+
 /** Bound only the transport copy. Local drafts, canonical tests, and history stay intact. */
 export function boundSnapshot(snapshot: PracticeSnapshot): PracticeSnapshot {
   const bounded = structuredClone(snapshot);
@@ -464,10 +508,12 @@ export function boundSnapshot(snapshot: PracticeSnapshot): PracticeSnapshot {
       }),
     );
   }
-  function size(): number {
+  function overBudget(): boolean {
     if (omissions.length || bounded.truncatedFields !== undefined)
       bounded.truncatedFields = [...omissions];
-    return encoder.encode(JSON.stringify(bounded)).byteLength;
+    // A large feedback/history payload can be hundreds of megabytes. Each
+    // reduction needs only an overflow decision, not another full encoding.
+    return exceedsJsonBudget(bounded, MAX_SNAPSHOT_BYTES);
   }
   function dropOldest<T>(
     values: T[],
@@ -498,11 +544,7 @@ export function boundSnapshot(snapshot: PracticeSnapshot): PracticeSnapshot {
 
   // Dense trace tables can dominate transport size. Shorten their read-only
   // copies before sacrificing execution evidence, preserving all local data.
-  for (
-    let limit = 1_024;
-    size() > MAX_SNAPSHOT_BYTES && limit >= 16;
-    limit /= 2
-  ) {
+  for (let limit = 1_024; overBudget() && limit >= 16; limit /= 2) {
     scratchpad(bounded.scratchpad, "scratchpad", limit);
     if (bounded.activeAttempt)
       scratchpad(
@@ -521,14 +563,14 @@ export function boundSnapshot(snapshot: PracticeSnapshot): PracticeSnapshot {
 
   // Preserve all selected/reviewed evidence at normal sizes. Only a measured byte
   // overflow evicts older history; the current attempt and its question survive.
-  while (size() > MAX_SNAPSHOT_BYTES && bounded.recentAttempts?.length) {
+  while (overBudget() && bounded.recentAttempts?.length) {
     dropOldest(
       bounded.recentAttempts,
       (value) => value.startedAt,
       "recentAttempts",
     );
   }
-  while (size() > MAX_SNAPSHOT_BYTES && bounded.activeAttempt?.runs.length) {
+  while (overBudget() && bounded.activeAttempt?.runs.length) {
     dropOldest(
       bounded.activeAttempt.runs,
       (value) => value.at,
@@ -539,12 +581,11 @@ export function boundSnapshot(snapshot: PracticeSnapshot): PracticeSnapshot {
   // Unicode assertions, for example). Explicitly mark any shortened evidence;
   // these snapshot copies must never be mistaken for executable canonical tests.
   let pressure = 8_192;
-  while (size() > MAX_SNAPSHOT_BYTES) {
+  while (overBudget()) {
     topLevel(pressure);
     if (bounded.activeAttempt)
       attempt(bounded.activeAttempt, "activeAttempt", pressure);
     pressure = Math.max(16, Math.floor(pressure / 2));
   }
-  size();
   return bounded;
 }
