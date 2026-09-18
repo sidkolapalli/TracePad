@@ -10,6 +10,8 @@
 
 .practice-setup-dialog .learning-hub-content {
   padding: 20px 28px;
+  /* Leave focused controls and their outlines clear of the fixed footer. */
+  scroll-padding-block: 8px;
 }
 
 .practice-setup-dialog .practice-mode-choice {

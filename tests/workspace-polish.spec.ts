@@ -1,4 +1,5 @@
 import { test, expect, readProjectState, type Page } from "./fixtures";
+import type { Locator } from "@playwright/test";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 
 async function expectInsideViewport(page: Page, name: string) {
@@ -10,6 +11,33 @@ async function expectInsideViewport(page: Page, name: string) {
   expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height);
   expect(bounds!.x).toBeGreaterThanOrEqual(0);
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
+}
+
+async function expectFocusedControlVisible(control: Locator) {
+  // Focus scrolling and hit testing can settle on different rendering frames.
+  // Require the whole control and its lower edge to be usable, including the
+  // focus inset, without assuming a particular OS's native control dimensions.
+  await expect(control).toBeFocused();
+  await expect
+    .poll(async () =>
+      control.evaluate((element) => {
+        const bounds = element.getBoundingClientRect();
+        const content = element
+          .closest(".learning-hub-content")!
+          .getBoundingClientRect();
+        return {
+          inside:
+            bounds.top >= content.top && bounds.bottom <= content.bottom - 4,
+          lowerEdgeReceivesPointer: element.contains(
+            document.elementFromPoint(
+              bounds.x + bounds.width / 2,
+              bounds.bottom - 1,
+            ),
+          ),
+        };
+      }),
+    )
+    .toEqual({ inside: true, lowerEdgeReceivesPointer: true });
 }
 
 test("practice keeps its start action and assistant prerequisite visible on a laptop and small phone", async ({
@@ -55,26 +83,7 @@ test("practice keeps its start action and assistant prerequisite visible on a la
   const topicSelect = page.locator(".practice-topic-field select");
   await page.getByRole("radio", { name: /^Topic practice/ }).focus();
   await page.keyboard.press("Tab");
-  await expect(topicSelect).toBeFocused();
-  const topic = await topicSelect.boundingBox();
-  const content = await page.locator(".learning-hub-content").boundingBox();
-  const footer = await page.locator(".practice-setup-footer").boundingBox();
-  expect(topic!.y).toBeGreaterThanOrEqual(content!.y);
-  // Native controls can have fractional bounds, while focus scrolling rounds
-  // its offset to whole CSS pixels (macOS leaves a 0.375px remainder here).
-  // Reject any full pixel of clipping and check the lower edge is hit-testable.
-  expect(topic!.y + topic!.height - footer!.y).toBeLessThan(1);
-  expect(
-    await topicSelect.evaluate((select) => {
-      const bounds = select.getBoundingClientRect();
-      return select.contains(
-        document.elementFromPoint(
-          bounds.x + bounds.width / 2,
-          bounds.bottom - 1,
-        ),
-      );
-    }),
-  ).toBe(true);
+  await expectFocusedControlVisible(topicSelect);
   await topicSelect.selectOption({ label: "Composition" });
   await expect(topicSelect.locator("option:checked")).toHaveText("Composition");
   await expectInsideViewport(page, "Start 15-minute practice");
@@ -112,6 +121,31 @@ test("practice keeps its start action and assistant prerequisite visible on a la
     path: "artifacts/polish-workspace-mobile-light.png",
     animations: "disabled",
   });
+});
+
+test("keyboard focus reveals enlarged setup controls above the fixed footer", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Practice", exact: true }).click();
+  // Reproduce larger native controls and fractional scroll bounds on every OS.
+  await page.addStyleTag({
+    content:
+      ".practice-settings select { min-height: 56.375px; font-size: 18px; }",
+  });
+  await page.getByRole("radio", { name: /^Topic practice/ }).focus();
+  await page.keyboard.press("Tab");
+  const topic = page.locator(".practice-topic-field select");
+  await expectFocusedControlVisible(topic);
+  await topic.selectOption({ label: "Composition" });
+  await expect(topic.locator("option:checked")).toHaveText("Composition");
+  await page.keyboard.press("Tab");
+  await expectFocusedControlVisible(
+    page.getByRole("combobox", { name: "Challenge", exact: true }),
+  );
+  await expectInsideViewport(page, "Start 15-minute practice");
+  await expectInsideViewport(page, "Connection settings");
 });
 
 test("deleted assertions can be restored in order, while an empty suite has a direct add-tests route", async ({
