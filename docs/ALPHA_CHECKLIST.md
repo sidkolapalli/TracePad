@@ -4,9 +4,9 @@ This is the preparation record for `v0.1.0-alpha.1`. Check a gate only after rec
 
 ## Public-release gates
 
-- [ ] Community contributions use forks and PRs; only the owner can merge to `main`. Both [branch-control rulesets](MAINTAINING.md) are active and verified, required CI checks cannot be bypassed, and `CODEOWNERS` has no errors.
+- [x] Community contributions use forks and PRs; only the owner can merge to `main`. Both [branch-control rulesets](MAINTAINING.md) are active and verified, required CI checks cannot be bypassed, and `CODEOWNERS` has no errors. Active rule IDs: `23698988` (owner gate), `23698989` (integrity). PR #3 was blocked with checks pending.
 - [x] Repository license, original exercise provenance, and dependency/runtime notices reviewed in source and production output. See the September 19 audit scope below.
-- [ ] A working private vulnerability-reporting route is enabled, tested, and linked in [SECURITY.md](../SECURITY.md).
+- [x] Private vulnerability reporting is enabled and linked in [SECURITY.md](../SECURITY.md). GitHub's API reports `enabled: true`, and the public Security page exposes **Report a vulnerability**. Verification inspected the entry point; no fictitious report was submitted.
 - [x] Publication audit found no personal databases, reusable credentials, exported personal projects, local assistant settings, or private artifacts in the files and branch history intended for publication. See scope and limitations below.
 - [ ] Clean installation uses `npm ci` on Node.js 24; the pinned runtime copies successfully without undocumented machine configuration.
 - [ ] Unit tests, the production build, browser tests, and offline production checks pass from the release candidate's clean checkout. Record commit and logs below.
@@ -55,7 +55,9 @@ The production check starts from `dist`, blocks non-local requests in a fresh br
 
 The September 19 dependency advisory check reported zero known npm vulnerabilities at the time of that check. Notice verification covered 136 production npm packages, emitted Vite/Rolldown helpers, and 13 pinned upstream runtime notice files. A clean scan is not a comprehensive security or license audit.
 
-The September 19 publication review covered all 17 baseline branch-history commits, tracked source and notice files, 14 completed Actions logs and 12 retained artifacts, and synthetic demo fixtures. Gitleaks findings were deterministic test fixtures, migration hashes, or expired loopback development-server tokens; no reusable credential was found. Local assistant checkpoint refs are not publication branches and must never be mirror-pushed. Media review covered every thumbnail, video metadata, and selected MCP setup frames; it was not exhaustive frame-by-frame OCR. Later release-check logs and artifacts are reviewed before publication and recorded in the prerelease. Automated detection cannot guarantee the absence of every secret.
+The September 19 publication review covered all 17 baseline branch-history commits, tracked source and notice files, 15 completed Actions logs and 13 retained artifacts, and synthetic demo fixtures. Gitleaks findings were deterministic test fixtures, migration hashes, or expired loopback development-server tokens; no reusable credential was found. Local assistant checkpoint refs are not publication branches and must never be mirror-pushed. Media review covered every thumbnail, video metadata, and selected MCP setup frames; it was not exhaustive frame-by-frame OCR. Later release-check logs and artifacts are reviewed before publication and recorded in the prerelease. Automated detection cannot guarantee the absence of every secret.
+
+Live safeguards also include read-only Actions tokens, no workflow-generated approving reviews, maintainer approval for all external-contributor workflows, dependency alerts, secret scanning, and push protection. The repository has no additional collaborators. GitHub's signed-out desktop page loaded the README masthead, workspace hero, and all 14 feature previews after publication; native iPhone rendering remains a separate check.
 
 The verification scope is Playwright's pinned Chromium. The matrix does not establish Safari or Firefox support, and automated workflow coverage does not substitute for a newcomer rehearsal. Use [current CI runs](https://github.com/sidkolapalli/TracePad/actions/workflows/ci.yml) to inspect later commits; an in-progress job is not a pass.
 

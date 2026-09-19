@@ -2,6 +2,7 @@ name: Alpha checks
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -31,6 +32,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Record runner capacity
+        run: node -e "const os = require('node:os'); console.log(JSON.stringify({platform:process.platform,arch:process.arch,node:process.version,cpus:os.availableParallelism(),memoryGiB:Math.round(os.totalmem()/1073741824)},null,2))"
       - name: Install from lockfile and prepare local runtime
         run: npm ci
       - name: Check public repository contents
