@@ -1,4 +1,10 @@
-import { test, expect, readProjectState, type Page } from "./fixtures";
+import {
+  test,
+  expect,
+  expectPythonStatus,
+  readProjectState,
+  type Page,
+} from "./fixtures";
 import type { Locator } from "@playwright/test";
 import { defaultSession, STORAGE_KEY } from "../src/session";
 
@@ -197,6 +203,7 @@ test("deleted assertions can be restored in order, while an empty suite has a di
     )
     .toEqual(session.drafts.sandbox.tests);
   await page.getByRole("button", { name: "Run tests", exact: true }).click();
+  await expectPythonStatus(page, "Completed");
   await expect(page.locator(".test-summary")).toContainText(
     "2 passed · 0 failed",
   );
