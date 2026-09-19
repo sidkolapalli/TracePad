@@ -4,6 +4,7 @@ This is a release preparation record, not a claim that a release has shipped. Ch
 
 ## Public-release gates
 
+- [ ] Community contributions use forks and PRs; only the owner can merge to `main`. Both [branch-control rulesets](MAINTAINING.md) are active and verified, required CI checks cannot be bypassed, and `CODEOWNERS` has no errors.
 - [ ] Maintainer has reviewed the repository license, original exercise provenance, and dependency/runtime notices in both source and production output.
 - [ ] A working private vulnerability-reporting route is enabled, tested, and linked in [SECURITY.md](../SECURITY.md).
 - [ ] The exact files and Git history intended for publication contain no `.localpad/`, credentials, exported personal projects, local assistant settings, or private artifacts.

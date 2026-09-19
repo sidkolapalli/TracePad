@@ -2,9 +2,20 @@
 
 Tracepad is an early-alpha, local Python interview practice app. Useful contributions include clearer exercises, reproducible bug reports, accessibility improvements, and making a clean installation more reliable. Start with a small change tied to something a learner cannot currently do or understand.
 
-The project lives at [sidkolapalli/TracePad](https://github.com/sidkolapalli/TracePad). Fork or clone that repository before following the setup below.
+The project lives at [sidkolapalli/TracePad](https://github.com/sidkolapalli/TracePad). Community contributions use forks and pull requests; repository write access is not needed.
 
 For a suspected vulnerability, follow [SECURITY.md](SECURITY.md) instead of opening a public issue. Keep discussions respectful and specific; describe the behavior and its effect on users rather than making assumptions about another contributor.
+
+## Fork and open a pull request
+
+1. Fork the repository to your account and clone your fork.
+2. Create a branch for your change: `git switch -c fix/describe-the-change`.
+3. Follow the setup and validation instructions below, then push the branch to your fork.
+4. Open a pull request against `sidkolapalli/TracePad:main`. Explain the behavior change and test results, then respond to review feedback.
+
+`@sidkolapalli` reviews and merges contributions. Contributors do not push or merge into the upstream `main` branch, and an approved PR does not grant merge permission. Changes to code, documentation, exercises, and CI all follow this workflow.
+
+Maintainers should follow [the branch-control setup and verification guide](docs/MAINTAINING.md). That guide records whether the prepared GitHub protections have actually been activated; a policy document or `CODEOWNERS` file alone does not enforce them.
 
 ## Set up a checkout
 
