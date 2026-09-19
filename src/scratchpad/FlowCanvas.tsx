@@ -1,5 +1,6 @@
 import {
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type KeyboardEvent,
@@ -138,6 +139,11 @@ export function FlowCanvas({ value, onChange, disabled = false }: Props) {
     moved: boolean;
   } | null>(null);
   const labelInput = useRef<HTMLInputElement>(null);
+  const pendingEdit = useRef<{
+    id: string;
+    selectAll: boolean;
+    scroll?: { left: number; top: number };
+  } | null>(null);
   const [selection, setSelection] = useState<Selection>(null);
   const [preview, setPreview] = useState<{
     id: string;
@@ -176,12 +182,28 @@ export function FlowCanvas({ value, onChange, disabled = false }: Props) {
       ? `edge:${selectedEdge.id}`
       : "";
 
+  // Apply focus immediately after the selected field is committed. Deferring
+  // this to an animation frame can steal focus after a user moves to X or Y,
+  // causing their coordinate input to overwrite the step label instead.
+  useLayoutEffect(() => {
+    const edit = pendingEdit.current;
+    if (!edit || !inspectorOpen || selectedNode?.id !== edit.id) return;
+    pendingEdit.current = null;
+    labelInput.current?.focus();
+    if (edit.selectAll) labelInput.current?.select();
+    if (edit.scroll && viewport.current) {
+      viewport.current.scrollLeft = edit.scroll.left;
+      viewport.current.scrollTop = edit.scroll.top;
+    }
+  }, [selection, selectedNode?.id, inspectorOpen]);
+
   function choose(next: Selection, edit = false) {
+    pendingEdit.current =
+      edit && next?.kind === "node" ? { id: next.id, selectAll: false } : null;
     setSelection(next);
     setTargetId("");
     if (edit) {
       setInspectorOpen(true);
-      requestAnimationFrame(() => labelInput.current?.focus());
     }
   }
 
@@ -210,15 +232,17 @@ export function FlowCanvas({ value, onChange, disabled = false }: Props) {
     };
     onChange({ ...value, nodes: [...value.nodes, node] });
     choose({ kind: "node", id: node.id }, true);
+    pendingEdit.current = {
+      id: node.id,
+      selectAll: true,
+      scroll: {
+        left: Math.max(0, (node.x - 70) * zoom),
+        top: Math.max(0, (node.y - 60) * zoom),
+      },
+    };
     setNotice(
       `${names[type]} added. Edit its label below or drag it on the canvas.`,
     );
-    requestAnimationFrame(() => {
-      if (!viewport.current) return;
-      viewport.current.scrollLeft = Math.max(0, (node.x - 70) * zoom);
-      viewport.current.scrollTop = Math.max(0, (node.y - 60) * zoom);
-      labelInput.current?.select();
-    });
   }
 
   function updateNode(id: string, patch: Partial<FlowNode>) {

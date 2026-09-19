@@ -1,20 +1,27 @@
 # Early-alpha release checklist
 
-This is a release preparation record, not a claim that a release has shipped. Check a gate only after recording its evidence. Tracepad should be introduced as an early alpha with one complete local mock interview; its question quality and newcomer experience still need outside feedback.
+This is the preparation record for `v0.1.0-alpha.1`. Check a gate only after recording its evidence. The [published prerelease](https://github.com/sidkolapalli/TracePad/releases/tag/v0.1.0-alpha.1) is the final publication record: it records the exact tagged commit, completed CI, and live repository safeguards, which cannot be certified in advance by a source commit. Tracepad is an early alpha: automated checks establish specific behavior, while question quality and the newcomer experience still need outside feedback.
 
 ## Public-release gates
 
 - [ ] Community contributions use forks and PRs; only the owner can merge to `main`. Both [branch-control rulesets](MAINTAINING.md) are active and verified, required CI checks cannot be bypassed, and `CODEOWNERS` has no errors.
-- [ ] Maintainer has reviewed the repository license, original exercise provenance, and dependency/runtime notices in both source and production output.
+- [x] Repository license, original exercise provenance, and dependency/runtime notices reviewed in source and production output. See the September 19 audit scope below.
 - [ ] A working private vulnerability-reporting route is enabled, tested, and linked in [SECURITY.md](../SECURITY.md).
-- [ ] The exact files and Git history intended for publication contain no `.localpad/`, credentials, exported personal projects, local assistant settings, or private artifacts.
+- [x] Publication audit found no personal databases, reusable credentials, exported personal projects, local assistant settings, or private artifacts in the files and branch history intended for publication. See scope and limitations below.
 - [ ] Clean installation uses `npm ci` on Node.js 24; the pinned runtime copies successfully without undocumented machine configuration.
 - [ ] Unit tests, the production build, browser tests, and offline production checks pass from the release candidate's clean checkout. Record commit and logs below.
 - [x] Test servers refuse to reuse occupied ports, and the normal practice database remains unchanged after tests (Windows check below).
 - [ ] Windows, Linux, and macOS results are recorded before claiming those platforms as verified. Record browser versions; bundled Chromium coverage does not establish Safari/Firefox support.
-- [ ] A newcomer finishes a rehearsal without step-by-step assistance from its author.
-- [ ] Backup/import, timer refresh recovery, code/module editing, Stop, both themes, keyboard navigation, narrow layout, and review evidence are checked with synthetic data.
-- [ ] Known limitations and any remaining failures are stated in prerelease notes. Maintainer chooses the tag, release assets, and announcement for [sidkolapalli/TracePad](https://github.com/sidkolapalli/TracePad) explicitly.
+- [x] Backup/import, timer refresh recovery, code/module editing, Stop, both themes, keyboard navigation, narrow layout, and review evidence are checked with synthetic data in the local browser suites.
+- [ ] Known limitations and any remaining failures are stated in [prerelease notes](RELEASE_NOTES.md). The exact verified commit is tagged `v0.1.0-alpha.1` and published as a GitHub prerelease, with source archives rather than personal databases or test artifacts.
+
+## After publication, before a broad announcement
+
+- [ ] The maintainer invites 3–5 people preparing for interviews to install the alpha and complete a rehearsal without step-by-step help.
+- [ ] Record their installation and workflow friction as focused issues, including operating system/browser and synthetic reproductions.
+- [ ] Confirm the README's images and demos in the GitHub iPhone app. Desktop and mobile Chromium previews do not establish native-app rendering.
+
+These are planned alpha feedback activities, not completed validation. The maintainer is arranging the first testers.
 
 ## Reproducible verification
 
@@ -39,20 +46,18 @@ The production check starts from `dist`, blocks non-local requests in a fresh br
 
 ### Verification record
 
-| Candidate / commit                                     | OS and version      | Node/npm                  | Browser                           | Commands and result                                                                                             | Evidence / unresolved issue                                                                                                             |
-| ------------------------------------------------------ | ------------------- | ------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.1.0-alpha.1 working tree, 2026-09-18 (not committed) | Windows build 26200 | Node 24.18.0 / npm 11.1.0 | Playwright Chromium 153.0.8010.12 | 164 unit tests; 35 production browser tests; repository and notice checks passed                                | GitHub CI, Linux/macOS, and newcomer rehearsal remain pending.                                                                          |
-| Same candidate, fresh dependency installation          | Windows build 26200 | Node 24.18.0 / npm 11.1.0 | Same pinned Chromium              | `npm ci`, runtime preparation, production build, offline runtime, theme/layout, and complete mock checks passed | Used documented system certificate trust for this network; TLS verification stayed enabled. Focus regression resolution recorded below. |
+| Candidate / commit | Environment | Result and evidence |
+| --- | --- | --- |
+| Historical `f8c9242`, September 18, 2026 | Node.js 24; GitHub-hosted Windows, Linux, and macOS; pinned Playwright Chromium | [Completed CI run](https://github.com/sidkolapalli/TracePad/actions/runs/35399169691): clean installation and repository/notice checks passed on all three operating systems, with 169 unit tests, 55 development browser tests, and 40 production browser tests including actual offline Pyodide. |
+| Historical local isolation check, September 18, 2026 | Windows build 26200; Node 24.18.0 / npm 11.1.0; Chromium 153.0.8010.12 | Occupied-port and external-URL rejection probes passed. The normal database, WAL, and bridge credential hashes stayed unchanged. Evidence: ignored local `artifacts/test-isolation-evidence.json`. |
+| September 19 release preparation | Windows; Node 24.18.0 / npm 11.1.0; Chromium 153.0.8010.12 | 169 unit tests, 56 development browser tests, and 41 production browser tests passed locally, including offline Pyodide and a regression for delayed flowchart focus. Cross-platform clean-checkout CI is a separate release gate. |
+| `v0.1.0-alpha.1` release candidate | Exact tagged commit and CI run in the [prerelease record](https://github.com/sidkolapalli/TracePad/releases/tag/v0.1.0-alpha.1) | Publication requires all three matrix jobs to pass. The prerelease records their counts and links; historical results above do not certify the release candidate. |
 
-The initial development suite passed 49 of 50 cases; a Vite reload caused by the temporary clean checkout interrupted the remaining module case. Test servers now disable file watching/HMR, and normal development ignores `.localpad/**`. All six module/isolation checks passed afterward. The occupied-port and external-URL rejection probes passed; hashes of the normal database, WAL, and bridge credential remained unchanged. Local evidence is in ignored `artifacts/test-isolation-evidence.json`.
+The September 19 dependency advisory check reported zero known npm vulnerabilities at the time of that check. Notice verification covered 136 production npm packages, emitted Vite/Rolldown helpers, and 13 pinned upstream runtime notice files. A clean scan is not a comprehensive security or license audit.
 
-The clean-install mock check exposed a focus race: dismissing Practice could restore focus after the user had already entered the editor. Focus restoration now respects a newly focused control. The browser test also waits for file creation and review dismissal to finish before typing. The complete mock passed from the clean installed production checkout; the related practice keyboard checks passed.
+The September 19 publication review covered all 17 baseline branch-history commits, tracked source and notice files, 14 completed Actions logs and 12 retained artifacts, and synthetic demo fixtures. Gitleaks findings were deterministic test fixtures, migration hashes, or expired loopback development-server tokens; no reusable credential was found. Local assistant checkpoint refs are not publication branches and must never be mirror-pushed. Media review covered every thumbnail, video metadata, and selected MCP setup frames; it was not exhaustive frame-by-frame OCR. Later release-check logs and artifacts are reviewed before publication and recorded in the prerelease. Automated detection cannot guarantee the absence of every secret.
 
-After the Tracepad identity and console changes, four targeted production browser checks passed: raw stdout/stderr, exact copy and clipboard failure, display-only clearing with unchanged saved evidence, theme persistence, desktop/narrow navigation, and offline Python execution. Batched visual captures cover the console in desktop light/dark and 320px light layouts. These checks use synthetic projects in isolated test databases.
-
-The dependency advisory check reported zero known npm vulnerabilities on this date. Notice verification covers 134 production npm packages, Vite/Rolldown emitted helpers, and 13 pinned upstream runtime notice files. These results do not replace review of a final committed release candidate.
-
-Do not mark an operating system verified just because a CI matrix includes it. Record a completed run and its result.
+The verification scope is Playwright's pinned Chromium. The matrix does not establish Safari or Firefox support, and automated workflow coverage does not substitute for a newcomer rehearsal. Use [current CI runs](https://github.com/sidkolapalli/TracePad/actions/workflows/ci.yml) to inspect later commits; an in-progress job is not a pass.
 
 ## First rehearsal walkthrough
 

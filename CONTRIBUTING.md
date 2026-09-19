@@ -4,7 +4,7 @@ Tracepad is an early-alpha, local Python interview practice app. Useful contribu
 
 The project lives at [sidkolapalli/TracePad](https://github.com/sidkolapalli/TracePad). Community contributions use forks and pull requests; repository write access is not needed.
 
-For a suspected vulnerability, follow [SECURITY.md](SECURITY.md) instead of opening a public issue. Keep discussions respectful and specific; describe the behavior and its effect on users rather than making assumptions about another contributor.
+Follow the [community code of conduct](CODE_OF_CONDUCT.md) in project spaces. Keep discussions respectful and specific; describe the behavior and its effect on users rather than making assumptions about another contributor. The policy explains conduct reporting and the current limits of private maintainer contact. For a suspected vulnerability, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## Fork and open a pull request
 

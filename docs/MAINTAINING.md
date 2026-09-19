@@ -2,15 +2,15 @@
 
 Community contributors work in forks and open pull requests. They do not need write access to `sidkolapalli/TracePad`. The repository owner, `@sidkolapalli`, reviews and merges changes. Contributing code does not grant merge permission.
 
-## Current enforcement status
+## Verify live enforcement
 
-On 2026-09-18, the GitHub access check listed only `sidkolapalli`, with no pending collaborator invitations. The repository was private. GitHub returned HTTP 403 for both rulesets and branch protection: upgrade to GitHub Pro or make the repository public to enable them.
+The authoritative state is the repository's [live GitHub rules](https://github.com/sidkolapalli/TracePad/rules), not the presence of JSON files in a checkout. Both rulesets below must be **Active** and apply to `main`. Keep community contributors off the collaborator list; they can use forks and pull requests.
 
-**The JSON files in `.github/rulesets/` are prepared configurations, not active protections.** Committing them or adding `CODEOWNERS` does not enable branch protection. Keep community contributors off the collaborator list. Enable and verify both rulesets before granting anyone write access.
+**Committing `.github/rulesets/` or `CODEOWNERS` does not activate protection.** The release record links to the verified live settings. Recheck the rules after changes to repository ownership, access, or CI; do not grant collaborator writes before enforcement is verified.
 
-GitHub supports these rulesets for public repositories on Free and private repositories on Pro or higher. Publishing the repository is a separate release decision; do not change its visibility just to work around this restriction. See [GitHub's ruleset availability](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets).
+GitHub supports these rulesets for public repositories on Free and private repositories on Pro or higher. See [GitHub's ruleset availability](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets). Fork maintainers must adapt the owner identity and repository-specific settings before importing these templates.
 
-## Intended controls
+## Branch controls
 
 Two rulesets apply together to `refs/heads/main`:
 
@@ -31,7 +31,7 @@ Required checks come from the GitHub Actions app (integration ID `15368`):
 
 If CI job names change, update the active rules and these templates together. Fix failing checks before merging; do not weaken the rules to pass a release. Auto-merge stays disabled. Administrators can still edit repository settings, so administrator access remains a separate trust decision.
 
-## Activate when GitHub supports enforcement
+## Initial activation and verification
 
 The owner needs an authenticated GitHub CLI session with repository administration permission. First land `CODEOWNERS`, inspect existing rules, and confirm the check names still match. If these named rules already exist, update their IDs rather than creating duplicates.
 

@@ -170,6 +170,52 @@ test("scratchpad uses mobile navigation and preserves execution results while ed
   await expect(page.locator(".monaco-editor")).toBeVisible();
 });
 
+test("a delayed animation frame cannot move flowchart typing into a different field", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await pad(page);
+  await page.getByRole("tab", { name: "Flowchart", exact: true }).click();
+  // Hold application animation callbacks to reproduce a busy rendering thread.
+  // Browser input and Playwright's own rendering checks continue normally.
+  const frames = await page.evaluateHandle(() => {
+    const request = window.requestAnimationFrame;
+    const cancel = window.cancelAnimationFrame;
+    const queued = new Map<number, FrameRequestCallback>();
+    let id = -1;
+    window.requestAnimationFrame = (callback) => {
+      queued.set(id, callback);
+      return id--;
+    };
+    window.cancelAnimationFrame = (handle) => {
+      if (!queued.delete(handle)) cancel.call(window, handle);
+    };
+    return {
+      release() {
+        window.requestAnimationFrame = request;
+        window.cancelAnimationFrame = cancel;
+        for (const callback of queued.values()) callback(performance.now());
+        queued.clear();
+      },
+    };
+  });
+  await page.getByRole("button", { name: "Add step", exact: true }).click();
+  const label = page.getByLabel("Step label", { exact: true });
+  await label.fill("Store seen values");
+  const x = page.getByLabel("X", { exact: true });
+  await x.focus();
+  await expect(x).toBeFocused();
+  await frames.evaluate((held) => held.release());
+  await frames.dispose();
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.keyboard.insertText("90");
+  await expect(x).toHaveValue("90");
+  await expect(label).toHaveValue("Store seen values");
+  await expect(
+    page.getByRole("button", { name: "Step: Store seen values", exact: true }),
+  ).toBeVisible();
+});
+
 test("flowcharts support labelled connections, keyboard and drag movement, undo, SVG export and reload", async ({
   page,
 }) => {

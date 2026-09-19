@@ -23,7 +23,7 @@ On Windows, if your npm configuration overrides the platform to Linux, install w
 
 Installation downloads dependencies once. The postinstall script copies the pinned Python runtime into `public/python/`; all runtime and editor files are served locally. After installation, the app needs the local server but no internet connection. No external fonts, CDNs, accounts, or code-execution services are used.
 
-No system Python, separate database, or Docker installation is needed. CI is configured for Node.js 24 on Windows, Linux, and macOS; that configuration is not a claim that hosted CI has already run. Current browser automation targets the Playwright-pinned Chromium build. Other browsers need verification before claiming support.
+No system Python, separate database, or Docker installation is needed. A completed [Node.js 24 CI run](https://github.com/sidkolapalli/TracePad/actions/runs/35399169691) at `f8c9242` passed clean installation, unit tests, browser tests, and production offline checks on Windows, Linux, and macOS. That is historical evidence, not a guarantee about every subsequent commit; see [current runs](https://github.com/sidkolapalli/TracePad/actions/workflows/ci.yml) and the [release verification record](ALPHA_CHECKLIST.md#verification-record). Browser automation targets the Playwright-pinned Chromium build. Safari and Firefox have not been verified.
 
 ## Build and verify
 
