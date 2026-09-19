@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { WorkspaceProject } from "../projects/types";
 import type { Dispatch, SetStateAction } from "react";
 import type { Draft, Exercise, SessionState } from "../types";
@@ -21,6 +21,7 @@ import {
   loadLearning,
   saveLearning,
 } from "./state";
+import { buildSRSMap, dueTopics } from "./srs";
 import { getInstanceId, usePracticeBridge } from "./bridge";
 import { validateQuestion } from "./validation";
 import { boundSnapshot } from "./snapshot";
@@ -515,6 +516,11 @@ export function useLearningWorkspace(
       );
   }
   const requirementUpdates = currentAttempt?.requirementUpdates ?? [];
+
+  // SRS map is stable until attempts change. dueTopics is O(topics) so
+  // recomputing it on every now tick (250 ms) is negligible.
+  const srsMap = useMemo(() => buildSRSMap(attempts), [attempts]);
+  const srsRecordsDue = useMemo(() => dueTopics(srsMap, now), [srsMap, now]);
   return {
     exercise,
     exercises,
@@ -628,6 +634,8 @@ export function useLearningWorkspace(
       requests,
       onCancelRequest: (id: string) =>
         setRequests((rs) => rs.filter((r) => r.id !== id)),
+      dueRecords: srsRecordsDue,
+      now,
       onGenerate: generate,
       onRequestQuestion: requestQuestion,
       onStartQuestion: (q: QuestionPackage, m: PracticeMode) =>
