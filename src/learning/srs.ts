@@ -1,18 +1,6 @@
-import type { Attempt, Level, RunEvidence } from "./types";
+import type { Attempt, Level, RunEvidence, SRSMap, SRSRecord } from "./types";
 
-export interface SRSRecord {
-  topicId: string;
-  n: number;
-  ef: number;
-  intervalDays: number;
-  nextReview: number;
-  lastAttemptAt: number;
-  lastQuality: number;
-  lastLevel: Level;
-  lastRecommendedMinutes: number;
-}
-
-export type SRSMap = Record<string, SRSRecord>;
+export type { SRSRecord, SRSMap };
 
 function filesMatch(
   a: Record<string, string> | undefined,
@@ -192,31 +180,40 @@ function defaultRecord(topicId: string, level: Level, recommendedMinutes: number
 }
 
 /**
- * Derive SRS state from all finished attempts, sorted by finishedAt so that
- * the SM-2 nextReview timestamps (which are anchored to finishedAt) are
- * applied in the same order the user actually completed the attempts.
+ * Derive SRS state from finished attempts, seeded from an optional checkpoint.
  *
- * Limitation: attempts are capped at 30 in localStorage (MAX_ATTEMPTS).
- * For users with extensive history on a single topic, evicted attempts
- * cause the computed EF and interval to be lower than the true value.
- * A separate persisted SRS store would fix this but adds storage complexity.
+ * The checkpoint captures SRS state for attempts that are no longer in the
+ * retained history window (evicted by the MAX_ATTEMPTS cap). Starting from
+ * `{ ...checkpoint }` means those evicted contributions are not lost.
+ *
+ * Idempotency: if an attempt's `finishedAt` is <= the checkpoint's
+ * `lastAttemptAt` for that topic, it was already incorporated and is skipped.
+ * This prevents double-counting when retained attempts overlap with the
+ * checkpoint window.
+ *
+ * Callers must update the checkpoint before eviction (e.g., in startQuestion)
+ * so that the evicted attempt's quality is captured before it disappears.
  */
-export function buildSRSMap(attempts: Attempt[]): SRSMap {
+export function buildSRSMap(attempts: Attempt[], checkpoint: SRSMap = {}): SRSMap {
   const finished = [...attempts]
     .filter((a) => a.finishedAt !== null)
     .sort((a, b) => a.finishedAt! - b.finishedAt! || a.id.localeCompare(b.id));
 
-  const map: SRSMap = {};
+  const map: SRSMap = { ...checkpoint };
 
   for (const attempt of finished) {
     const { topicId, level, recommendedMinutes } = attempt.question;
     const at = attempt.finishedAt!;
+
+    const existing = map[topicId];
+    if (existing && existing.lastAttemptAt > at) continue;
+
     const quality = scoreAttempt(attempt);
     if (quality === null) continue;
 
     map[topicId] = {
       ...updateSRS(
-        map[topicId] ?? defaultRecord(topicId, level, recommendedMinutes),
+        existing ?? defaultRecord(topicId, level, recommendedMinutes),
         quality,
         at,
       ),

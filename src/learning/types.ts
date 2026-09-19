@@ -100,12 +100,26 @@ export interface Attempt {
   };
   feedback: CoachingFeedback[];
 }
+export interface SRSRecord {
+  topicId: string;
+  n: number;
+  ef: number;
+  intervalDays: number;
+  nextReview: number;
+  lastAttemptAt: number;
+  lastQuality: number;
+  lastLevel: Level;
+  lastRecommendedMinutes: number;
+}
+export type SRSMap = Record<string, SRSRecord>;
+
 export interface LearningState {
   schemaVersion: 1;
   activeAttemptId: string | null;
   attempts: Attempt[];
   acceptedQuestions: QuestionPackage[];
   processedCommandIds: string[];
+  srsCheckpoint?: SRSMap;
 }
 export interface PracticeSnapshot {
   truncatedFields?: string[];

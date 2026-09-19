@@ -776,6 +776,101 @@ describe("buildSRSMap", () => {
       "python.oop.validation",
     ]);
   });
+
+  it("seeds from checkpoint so an evicted attempt's contribution is not lost", () => {
+    // In startQuestion, only the evicted attempt goes into the checkpoint.
+    // Checkpoint = buildSRSMap([a1_evicted], {}); retained = [a2].
+    // Without the checkpoint, a2 alone gives n=1. With it, a1's contribution
+    // (via checkpoint) stacks so n=2.
+    const a1 = makeAttempt({
+      id: "a1",
+      startedAt: NOW,
+      finishedAt: NOW + 10 * 60_000,
+      deadline: NOW + 15 * 60_000,
+      runs: [baselineRun(question, [true, true])],
+    });
+    const a2 = makeAttempt({
+      id: "a2",
+      startedAt: NOW + DAY,
+      finishedAt: NOW + DAY + 10 * 60_000,
+      deadline: NOW + DAY + 15 * 60_000,
+      runs: [baselineRun(question, [true, true], { id: "run-2", at: NOW + DAY + 5_000 })],
+    });
+
+    const checkpoint = buildSRSMap([a1], {}); // only evicted attempt
+
+    const mapWithout = buildSRSMap([a2], {});
+    expect(mapWithout["python.oop.instance-state"].n).toBe(1);
+
+    const mapWith = buildSRSMap([a2], checkpoint);
+    expect(mapWith["python.oop.instance-state"].n).toBe(2);
+    expect(mapWith["python.oop.instance-state"].intervalDays).toBe(6);
+  });
+
+  it("skips retained attempts that are strictly older than the checkpoint's lastAttemptAt", () => {
+    // If an older attempt somehow appears in the retained list after a newer one
+    // was checkpointed, it should be skipped (lastAttemptAt > at → skip).
+    const a1 = makeAttempt({
+      id: "a1",
+      startedAt: NOW,
+      finishedAt: NOW + 10 * 60_000,
+      deadline: NOW + 15 * 60_000,
+      runs: [baselineRun(question, [true, true])],
+    });
+    const a2 = makeAttempt({
+      id: "a2",
+      startedAt: NOW + DAY,
+      finishedAt: NOW + DAY + 10 * 60_000,
+      deadline: NOW + DAY + 15 * 60_000,
+      runs: [baselineRun(question, [true, true], { id: "run-2", at: NOW + DAY + 5_000 })],
+    });
+
+    // Checkpoint has a2 already incorporated (lastAttemptAt = a2.finishedAt).
+    const checkpoint = buildSRSMap([a1, a2], {});
+
+    // Processing [a1] against this checkpoint: a1.finishedAt < lastAttemptAt → skipped.
+    const map = buildSRSMap([a1], checkpoint);
+    expect(map["python.oop.instance-state"]).toEqual(
+      checkpoint["python.oop.instance-state"],
+    );
+  });
+
+  it("preserves the SRS record when the topic's only attempt is evicted by the 30-entry cap", () => {
+    // Regression: when a topic's last attempt is evicted by MAX_ATTEMPTS,
+    // its SRS record must survive via the checkpoint.
+    // startQuestion evicts [firstAttempt] → checkpoint = buildSRSMap([firstAttempt], {}).
+    // retained = 29 filler attempts on a different topic.
+    const other = { ...question, topicId: "python.oop.validation" };
+    const firstAttempt = makeAttempt({
+      id: "a0",
+      startedAt: NOW,
+      finishedAt: NOW + 10 * 60_000,
+      deadline: NOW + 15 * 60_000,
+      runs: [baselineRun(question, [true, true], { id: "run-0" })],
+    });
+    const fillers = Array.from({ length: 29 }, (_, i) =>
+      makeAttempt({
+        id: `f${i}`,
+        question: other,
+        startedAt: NOW + (i + 1) * DAY,
+        finishedAt: NOW + (i + 1) * DAY + 10 * 60_000,
+        deadline: NOW + (i + 1) * DAY + 15 * 60_000,
+        runs: [baselineRun(other, [true, true], { id: `run-f${i}` })],
+      }),
+    );
+
+    // Checkpoint captures only the evicted attempt.
+    const checkpoint = buildSRSMap([firstAttempt], {});
+
+    // Without checkpoint: firstAttempt's topic is gone.
+    expect(buildSRSMap(fillers, {})["python.oop.instance-state"]).toBeUndefined();
+
+    // With checkpoint: record is preserved and matches what a full recompute gives.
+    const mapWith = buildSRSMap(fillers, checkpoint);
+    expect(mapWith["python.oop.instance-state"]).toBeDefined();
+    expect(mapWith["python.oop.instance-state"].n).toBe(1);
+    expect(mapWith["python.oop.instance-state"].lastQuality).toBe(5);
+  });
 });
 
 // ---------------------------------------------------------------------------

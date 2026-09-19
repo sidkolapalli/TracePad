@@ -380,11 +380,27 @@ export function useLearningWorkspace(
       mode === "mock" ? 60 : minutes,
     );
     const id = `attempt-${attempt.id}`;
-    setState((s) => ({
-      ...s,
-      activeAttemptId: attempt.id,
-      attempts: [...s.attempts, attempt].slice(-30),
-    }));
+    setState((s) => {
+      const nextAttempts = [...s.attempts, attempt];
+      let nextCheckpoint = s.srsCheckpoint ?? {};
+      if (nextAttempts.length > 30) {
+        // Capture SRS state for the attempts about to be evicted. Only
+        // evicted attempts go into the checkpoint — retained attempts are
+        // applied directly by the useMemo — so there is no double-counting.
+        const evicted = nextAttempts
+          .slice(0, nextAttempts.length - 30)
+          .filter((a) => a.finishedAt !== null);
+        if (evicted.length > 0) {
+          nextCheckpoint = buildSRSMap(evicted, nextCheckpoint);
+        }
+      }
+      return {
+        ...s,
+        activeAttemptId: attempt.id,
+        attempts: nextAttempts.slice(-30),
+        srsCheckpoint: nextCheckpoint,
+      };
+    });
     setSession((s) => ({
       ...s,
       activeId: id,
@@ -517,9 +533,12 @@ export function useLearningWorkspace(
   }
   const requirementUpdates = currentAttempt?.requirementUpdates ?? [];
 
-  // SRS map is stable until attempts change. dueTopics is O(topics) so
-  // recomputing it on every now tick (250 ms) is negligible.
-  const srsMap = useMemo(() => buildSRSMap(attempts), [attempts]);
+  // SRS map depends on both the retained attempts and the checkpoint that
+  // preserves SRS state for attempts evicted by the history cap.
+  const srsMap = useMemo(
+    () => buildSRSMap(attempts, state.srsCheckpoint ?? {}),
+    [attempts, state.srsCheckpoint],
+  );
   const srsRecordsDue = useMemo(() => dueTopics(srsMap, now), [srsMap, now]);
   return {
     exercise,
