@@ -1,4 +1,11 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { KeyboardEvent } from "react";
 import {
   Check,
@@ -105,6 +112,8 @@ export function WorkspaceFiles({
   const inputRef = useRef<HTMLInputElement>(null);
   const deleteRef = useRef<HTMLButtonElement>(null);
   const newRef = useRef<HTMLButtonElement>(null);
+  // undefined: no request; null: return to the New file button.
+  const focusAfterCommit = useRef<string | null | undefined>(undefined);
   const paths = Object.keys(files);
   const pathsKey = paths.join("\0");
   const tree = useMemo(() => makeTree(paths), [pathsKey]);
@@ -134,7 +143,7 @@ export function WorkspaceFiles({
       return next;
     });
   }, [activeFile]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (form) {
       inputRef.current?.focus();
       const input = inputRef.current;
@@ -148,9 +157,18 @@ export function WorkspaceFiles({
       }
     }
   }, [form]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (pendingDelete) deleteRef.current?.focus();
   }, [pendingDelete]);
+  useLayoutEffect(() => {
+    const path = focusAfterCommit.current;
+    focusAfterCommit.current = undefined;
+    if (path === undefined || form || pendingDelete) return;
+    // Restore focus once the new tree exists, before another user action can
+    // open an input. A delayed animation callback can steal that input's focus.
+    if (path && itemRefs.current.has(path)) focusPath(path);
+    else newRef.current?.focus();
+  });
   useEffect(() => {
     if (
       form?.kind === "rename" &&
@@ -185,6 +203,7 @@ export function WorkspaceFiles({
 
   function beginCreate() {
     if (disabled) return;
+    focusAfterCommit.current = undefined;
     setError("");
     setAnnouncement("");
     setPendingDelete(null);
@@ -198,6 +217,7 @@ export function WorkspaceFiles({
 
   function beginRename(path: string) {
     if (disabled || path === "main.py") return;
+    focusAfterCommit.current = undefined;
     setError("");
     setAnnouncement("");
     setPendingDelete(null);
@@ -211,6 +231,7 @@ export function WorkspaceFiles({
 
   function beginDelete(path: string) {
     if (disabled || path === "main.py") return;
+    focusAfterCommit.current = undefined;
     setForm(null);
     setError("");
     setAnnouncement("");
@@ -221,10 +242,7 @@ export function WorkspaceFiles({
     const returnPath = form?.original ?? form?.parent;
     setForm(null);
     setError("");
-    requestAnimationFrame(() => {
-      if (returnPath && itemRefs.current.has(returnPath)) focusPath(returnPath);
-      else newRef.current?.focus();
-    });
+    focusAfterCommit.current = returnPath ?? null;
   }
 
   function submitFile() {
@@ -260,7 +278,7 @@ export function WorkspaceFiles({
         parents(path).forEach((parent) => next.delete(parent));
         return next;
       });
-      requestAnimationFrame(() => focusPath(path));
+      focusAfterCommit.current = path;
     } catch (failure) {
       setError(
         failure instanceof Error
@@ -281,7 +299,8 @@ export function WorkspaceFiles({
       setAnnouncement(`Deleted ${pendingDelete}.`);
       setPendingDelete(null);
       setError("");
-      requestAnimationFrame(() => focusPath("main.py"));
+      setRootCollapsed(false);
+      focusAfterCommit.current = "main.py";
     } catch (failure) {
       setError(
         failure instanceof Error
@@ -640,7 +659,7 @@ export function WorkspaceFiles({
                 const path = pendingDelete;
                 setPendingDelete(null);
                 setError("");
-                requestAnimationFrame(() => focusPath(path));
+                focusAfterCommit.current = path;
               }}
             >
               Keep file

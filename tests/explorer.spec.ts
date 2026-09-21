@@ -104,3 +104,111 @@ test("explorer creates files in context, supports keyboard rename and reveals se
     await page.screenshot({ path: `artifacts/explorer-mobile-${width}.png` });
   }
 });
+
+for (const action of ["create", "cancel rename"] as const) {
+  test(`delayed ${action} focus cannot steal typing from a new rename`, async ({
+    page,
+  }) => {
+    const session = defaultSession();
+    session.activeId = "sandbox";
+    session.sidebarTab = "files";
+    await page.addInitScript(
+      ({ key, state }) => {
+        if (!localStorage.getItem(key))
+          localStorage.setItem(key, JSON.stringify(state));
+      },
+      { key: STORAGE_KEY, state: session },
+    );
+    await page.goto("/");
+    await page.getByRole("button", { name: "New file", exact: true }).click();
+    const path = page.getByLabel("File path", { exact: true });
+    await path.fill("customer.py");
+    const customer = page.getByRole("treeitem", {
+      name: "customer.py",
+      exact: true,
+    });
+    if (action === "cancel rename") {
+      await path.press("Enter");
+      await expect(customer).toBeFocused();
+      await customer.press("F2");
+      await expect(path).toBeFocused();
+    }
+
+    // Keep input responsive while simulating a delayed rendering frame. This
+    // exposes an older focus callback overtaking the user's next action.
+    const frames = await page.evaluateHandle(() => {
+      const request = window.requestAnimationFrame;
+      const cancel = window.cancelAnimationFrame;
+      const queued = new Map<number, FrameRequestCallback>();
+      let id = -1;
+      window.requestAnimationFrame = (callback) => {
+        queued.set(id, callback);
+        return id--;
+      };
+      window.cancelAnimationFrame = (handle) => {
+        if (!queued.delete(handle)) cancel.call(window, handle);
+      };
+      return {
+        release() {
+          window.requestAnimationFrame = request;
+          window.cancelAnimationFrame = cancel;
+          for (const callback of queued.values()) callback(performance.now());
+          queued.clear();
+        },
+      };
+    });
+    try {
+      await path.press(action === "create" ? "Enter" : "Escape");
+      await expect(customer).toHaveAttribute("aria-selected", "true");
+      await customer.press("F2");
+      await expect(path).toBeFocused();
+    } finally {
+      await frames.evaluate((held) => held.release());
+      await frames.dispose();
+    }
+    await expect(path).toBeFocused();
+    // F2 selects only the basename, so real typing must keep the .py extension.
+    await page.keyboard.insertText("client");
+    await expect(path).toHaveValue("client.py");
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("treeitem", { name: "client.py", exact: true }),
+    ).toBeFocused();
+  });
+}
+
+test("deleting the active file restores focus after the workspace was collapsed", async ({
+  page,
+}) => {
+  const session = defaultSession();
+  session.activeId = "sandbox";
+  session.sidebarTab = "files";
+  session.drafts.sandbox = {
+    source: "",
+    files: { "customer.py": "" },
+    activeFile: "customer.py",
+    stdin: "",
+    tests: [],
+  };
+  await page.addInitScript(
+    ({ key, state }) => {
+      if (!localStorage.getItem(key))
+        localStorage.setItem(key, JSON.stringify(state));
+    },
+    { key: STORAGE_KEY, state: session },
+  );
+  await page.goto("/");
+  await page
+    .getByRole("treeitem", { name: "customer.py", exact: true })
+    .press("Delete");
+  await page
+    .getByRole("button", { name: "Collapse workspace files", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Delete file", exact: true }).click();
+  await expect(
+    page.getByRole("treeitem", { name: "main.py", exact: true }),
+  ).toBeFocused();
+  await expect(
+    page.getByRole("treeitem", { name: "customer.py", exact: true }),
+  ).toHaveCount(0);
+});

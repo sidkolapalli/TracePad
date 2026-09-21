@@ -37,6 +37,7 @@ export function defaultLearning(): LearningState {
     attempts: [],
     acceptedQuestions: [],
     processedCommandIds: [],
+    srsCheckpoint: {},
   };
 }
 
@@ -236,6 +237,22 @@ function isAttempt(value: unknown): value is Attempt {
     uniqueIds(value.feedback as CoachingFeedback[])
   );
 }
+function isSRSRecord(value: unknown): boolean {
+  return (
+    record(value) &&
+    id(value.topicId) &&
+    nonnegative(value.n) &&
+    number(value.ef) &&
+    nonnegative(value.intervalDays) &&
+    nonnegative(value.nextReview) &&
+    nonnegative(value.lastAttemptAt) &&
+    nonnegative(value.lastQuality) &&
+    (value.lastLevel === "foundation" || value.lastLevel === "applied") &&
+    number(value.lastRecommendedMinutes) &&
+    (value.lastRecommendedMinutes as number) > 0
+  );
+}
+
 export function isLearning(value: unknown): value is LearningState {
   return (
     record(value) &&
@@ -253,7 +270,13 @@ export function isLearning(value: unknown): value is LearningState {
     uniqueIds(value.acceptedQuestions) &&
     strings(value.processedCommandIds) &&
     value.processedCommandIds.every(id) &&
-    new Set(value.processedCommandIds).size === value.processedCommandIds.length
+    new Set(value.processedCommandIds).size ===
+      value.processedCommandIds.length &&
+    (value.srsCheckpoint === undefined ||
+      (record(value.srsCheckpoint) &&
+        Object.values(value.srsCheckpoint as Record<string, unknown>).every(
+          isSRSRecord,
+        )))
   );
 }
 

@@ -9,6 +9,7 @@ import {
   History,
   LoaderCircle,
   Plug,
+  RefreshCw,
   Sparkles,
   X,
 } from "lucide-react";
@@ -16,6 +17,7 @@ import { AttemptReview } from "./LearningPanel";
 import { TracepadMark } from "../TracepadMark";
 import { attemptSummary } from "./state";
 import { INTERVIEW_PHASES } from "./journey";
+import type { SRSRecord } from "./srs";
 import type {
   Attempt,
   BridgeCommand,
@@ -66,6 +68,8 @@ export interface LearningHubProps {
   preparing: boolean;
   preparationError: string;
   onCancelPreparation: () => void;
+  dueRecords: SRSRecord[];
+  now: number;
 }
 
 const tabs = [
@@ -106,6 +110,8 @@ export function LearningHub(props: LearningHubProps) {
     preparing,
     preparationError,
     onCancelPreparation,
+    dueRecords,
+    now,
   } = props;
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
@@ -120,6 +126,9 @@ export function LearningHub(props: LearningHubProps) {
   const [configRetry, setConfigRetry] = useState(0);
   const [copyMessage, setCopyMessage] = useState("");
   const composition = topics.find((topic) => topic.id.includes("composition"));
+  const visibleDue = dueRecords.filter((r) =>
+    topics.some((t) => t.id === r.topicId),
+  );
   const selectedTopic =
     mode === "mock" ? (composition?.id ?? topicId) : topicId;
   const selectedLevel = mode === "mock" ? "applied" : level;
@@ -358,6 +367,60 @@ export function LearningHub(props: LearningHubProps) {
         >
           {view === "setup" && (
             <div className="learning-setup">
+              {visibleDue.length > 0 && (
+                <section className="srs-due-section">
+                  <div className="hub-section-heading">
+                    <h3>
+                      <RefreshCw size={15} /> Due for review
+                    </h3>
+                    <span>
+                      {visibleDue.length} topic
+                      {visibleDue.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <div className="srs-due-list">
+                    {visibleDue.map((record) => {
+                      const topic = topics.find(
+                        (t) => t.id === record.topicId,
+                      )!;
+                      const overdueDays = Math.max(
+                        0,
+                        Math.floor((now - record.nextReview) / 86_400_000),
+                      );
+                      return (
+                        <div className="srs-due-row" key={record.topicId}>
+                          <div className="srs-due-info">
+                            <strong>{topic.title}</strong>
+                            <span>
+                              {overdueDays === 0
+                                ? "Due today"
+                                : `${overdueDays}d overdue`}
+                              {" · last score "}
+                              {record.lastQuality}/5
+                            </span>
+                          </div>
+                          <button
+                            className="secondary-button"
+                            aria-label={`Review ${topic.title} now`}
+                            disabled={preparing}
+                            onClick={() =>
+                              onGenerate(
+                                record.topicId,
+                                record.lastLevel,
+                                "drill",
+                                record.lastRecommendedMinutes,
+                              )
+                            }
+                          >
+                            <RefreshCw size={13} aria-hidden="true" />
+                            Review now
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
               <fieldset className="practice-mode-choice">
                 <legend>How do you want to practice?</legend>
                 <label className={mode === "drill" ? "selected" : ""}>

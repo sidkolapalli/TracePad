@@ -69,6 +69,43 @@
 .learning-hub-content p {
   overflow-wrap: anywhere;
 }
+.srs-due-section {
+  margin-bottom: 26px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid light-dark(var(--light-line), #3c475a);
+}
+.srs-due-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid light-dark(var(--light-line), #3c475a);
+}
+.srs-due-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid light-dark(var(--light-line), #354052);
+}
+.srs-due-info {
+  min-width: 0;
+}
+.srs-due-info strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.srs-due-info span {
+  display: block;
+  font-size: 11px;
+  color: light-dark(var(--light-text-secondary), #aebdd1);
+  line-height: 1.65;
+  margin-top: 3px;
+}
+.srs-due-row > button {
+  flex-shrink: 0;
+  gap: 7px;
+}
 .practice-mode-choice {
   border: 0;
   padding: 0;
@@ -869,6 +906,14 @@
   }
   .attempt-review > h3 {
     font-size: 20px;
+  }
+  .srs-due-row {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .srs-due-info {
+    flex-basis: calc(100% - 110px);
+    min-width: 0;
   }
   .preparation-status {
     flex-wrap: wrap;
